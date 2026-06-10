@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.14</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <groupId>com.dfec.soft</groupId>
+    <artifactId>secret-projects-v4</artifactId>
+    <version>$｛revision｝</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>backend</module>
+        <module>frontend</module>
+    </modules>
+
+    <properties>
+        <revision>1.0.0-SHAPSHOT</revision>
+        <java.version>17</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- 多模块版本控制插件-->
+        <flatten-maven-plugin.version>1.7.3</flatten-maven-plugin.version>
+        <!-- 编译插件-->
+        <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
+        <!-- 源码打包插件-->
+        <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
+        <!-- 测试套件插件 -->
+        <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
+        <!-- pmd 静态代码检查插件 -->
+        <maven-pmd-plugin.version>3.21.2</maven-pmd-plugin.version>
+        <!-- 报告生成插件 -->
+        <maven-jxr-plugin.version>3.6.0</maven-jxr-plugin.version>
+        <!-- alibaba p3c 静态代码检查插件 -->
+        <p3c-pmd.version>2.2.1.0x</p3c-pmd.version>
+        <!-- 编译时跳过单元测试 -->
+        <maven.test.skip>false</maven.test.skip>
+        <!-- 跳过单元测试运行配置-->
+        <skipTests>false</skipTests>
+        <pmd.excludes>${pmd.exclude}</pmd.excludes>
+        <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
+        <frontend-maven-plugin.version>2.0.0</frontend-maven-plugin.version>
+        <mapstruct.version>1.6.3</mapstruct.version>
+        <spring-boot.version>3.5.14</spring-boot.version>
+        <spotbugs-maven-plugin.version>4.9.8.3</spotbugs-maven-plugin.version>
+        <ndp-spotbugs-resource.version>1.0.1-SNAPSHOT</ndp-spotbugs-resource.version>
+        <os.plugin.version>1.7.1</os.plugin.version>
+        <maven-assembly-plugin.version>3.8.0</maven-assembly-plugin.version>
+        <mybatis-plus.version>3.5.15</mybatis-plus.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-spring-boot3-starter-test</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-jsqlparser</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <extensions>
+            <extension>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>os-maven-plugin</artifactId>
+                <version>${os.plugin.version}</version>
+            </extension>
+        </extensions>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-pmd-plugin</artifactId>
+                    <version>${maven-pmd-plugin.version}</version>
+                    <configuration>
+                        <linkXRef>true</linkXRef>
+                        <minimumTokens>100</minimumTokens>
+                        <targetJdk>${java.version}</targetJdk>
+                        <printFailingErrors>true</printFailingErrors>
+                        <minimumPriority>5</minimumPriority>
+                        <excludes>
+                            <exclude>**/generated/*.java</exclude>
+                            <exclude>**/mapstruct/**/*.java</exclude>
+                            <exclude>${pmd.excludes}</exclude>
+                        </excludes>
+
+                        <rulesets>
+                            <ruleset>rulesets/java/ali-comment.xml</ruleset>
+                            <ruleset>rulesets/java/ali-concurrent.xml</ruleset>
+                            <ruleset>rulesets/java/ali-constant.xml</ruleset>
+                            <ruleset>rulesets/java/ali-exception.xml</ruleset>
+                            <ruleset>rulesets/java/ali-flowcontrol.xml</ruleset>
+                            <ruleset>rulesets/java/ali-naming.xml</ruleset>
+                            <ruleset>rulesets/java/ali-oop.xml</ruleset>
+                            <ruleset>rulesets/java/ali-orm.xml</ruleset>
+                            <ruleset>rulesets/java/ali-other.xml</ruleset>
+                            <ruleset>rulesets/java/ali-set.xml</ruleset>
+                        </rulesets>
+                    </configuration>
+
+                    <executions>
+                        <!-- 绑定pmd:check到verify生命周期 -->
+                        <execution>
+                            <id>pmd-check-verify</id>
+                            <phase>compile</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <!-- p3c依赖 -->
+                    <dependencies>
+                        <!-- Source: https://mvnrepository.com/artifact/com.xenoamess.p3c/p3c-pmd -->
+                        <dependency>
+                            <groupId>com.xenoamess.p3c</groupId>
+                            <artifactId>p3c-pmd</artifactId>
+                            <version>${p3c-pmd.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+
+                <!--关键插件,maven提供的assembly插件,需要放在最后-->
+                <plugin>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${maven-assembly-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>make-tar.gz</id>
+                            <!--绑定的maven操作-->
+                            <phase>package</phase>
+                            <!--运行一次-->
+                            <goals>
+                                <goal>single</goal>
+                            </goals>
+                            <configuration>
+
+                                <!--如果不想在打包的后缀加上assembly.xml中设置的id，可以加上下面的配置-->
+                                <!--<appendAssemblyId>false</appendAssemblyId>-->
+
+                                <!--指定assembly插件对应的assembly.xml配置文件-->
+                                <descriptors>
+                                    <descriptor>src/main/resources/assembly/assembly.xml</descriptor>
+                                </descriptors>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>com.github.eirslett</groupId>
+                    <artifactId>frontend-maven-plugin</artifactId>
+                    <version>2.0.0</version>
+                    <executions>
+                        <execution>
+                            <id>install-tools</id>
+                            <goals>
+                                <goal>install-node-and-pnpm</goal>
+                            </goals>
+                            <phase>generate-resources</phase>
+                        </execution>
+                        <execution>
+                            <id>instal-deps</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>pnpm</goal>
+                            </goals>
+                            <configuration>
+                                <arguments>install</arguments>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>package</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>pnpm</goal>
+                            </goals>
+                            <configuration>
+                                <arguments>build</arguments>
+                            </configuration>
+                        </execution>
+                    </executions>
+
+                    <configuration>
+                        <installDirectory>target</installDirectory>
+                        <nodeVersion>v24.16.0</nodeVersion>
+                        <pnpmVersion>v10.33.3</pnpmVersion>
+                        <nodeDownloadRoot>https://mirrors.tencent.com/nodejs-release/</nodeDownloadRoot>
+                        <pnpmDownloadRoot>https://mirrors.tencent.com/npm/pnpm/-/</pnpmDownloadRoot>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+
+            <!-- maven 编译插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <!-- 是否跳过测试 -->
+                    <skip>${maven.test.skip}</skip>
+                    <!-- 制定编译版本 -->
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <!-- 指定字符集 -->
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapstruct.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-configuration-processor</artifactId>
+                            <version>${spring-boot.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
+            <!-- 打包源码 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven-source-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <skipTests>${skipTests}</skipTests>
+                </configuration>
+            </plugin>
+
+            <!-- 多模块版本管理插件 -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>${flatten-maven-plugin.version}</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <outputDirectory>${project.build.directory}</outputDirectory>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+
+        <resources>
+            <!-- 解决idea下xml文件的编译打包问题 -->
+            <resource>
+                <filtering>false</filtering>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+            <!-- 编译时处理配置文件变量 -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*.yaml</include>
+                    <include>**/*.properties</include>
+                </includes>
+            </resource>
+            <!-- 其他资源不做处理 -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <finalName>${project.artifactId}</finalName>
+    </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>${maven-jxr-plugin.version}</version>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <distributionManagement>
+        <repository>
+            <id>dfec-releases</id>
+            <name>dfec private releases repository</name>
+            <url>https://maven.dfec.com.cn/repository/dfec-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>dfec-snapshots</id>
+            <name>dfec private snapshots repository</name>
+            <url>https://maven.dfec.com.cn/repository/dfec-snapshot/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+</project>
