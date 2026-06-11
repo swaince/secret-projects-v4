@@ -2,6 +2,37 @@
 
 Vue 3.5 · Vite 8 · TypeScript 6 · Tailwind CSS v4 · shadcn-vue · pnpm
 
+## 强制技能
+
+页面及组件开发必须协同使用以下五个技能：
+
+### 分工
+
+| 技能 | 职责 | 适用领域 |
+|------|------|----------|
+| `shadcn-vue` | 组件结构 | 组件发现、安装、API 查询、使用模式 |
+| `tailwindcss` | 样式实现 | Tailwind v4 CSS-first 配置、工具类、响应式 |
+| `frontend-design` | 美学方向 | 视觉风格、排版、色彩运用、空间构成 |
+| `ui-ux-pro-max` | 交互体验 | 设计系统、配色方案、字体搭配、布局模式 |
+| `web-design-guidelines` | 规范合规 | 可访问性、焦点状态、动画、表单、语义化 |
+
+### 冲突解决
+
+所有技能输出以 `design-system.css`（`src/styles/design-system.css`）为最终裁定：
+
+1. **样式变量**：`design-system.css` > 所有技能建议。颜色、字体、圆角、阴影、间距均以此文件为准
+2. **组件选择**：`shadcn-vue` > 自定义。先查 shadcn-vue 是否有现成组件，无则基于 reka-ui 封装
+3. **视觉风格**：`frontend-design` 主导方向，但必须使用 `design-system.css` 变量实现，禁止硬编码数值
+4. **交互规范**：`web-design-guidelines` 支配。可访问性（aria-label、focus-visible）、语义化 HTML 不可被视觉需求覆盖
+5. **技术实现**：`tailwindcss` 指导。Tailwind v4 CSS-first，无 `tailwind.config.js`，通过 `@tailwindcss/vite` 集成
+6. **体验模式**：`ui-ux-pro-max` 提供参考数据（配色方案、字体搭配），`design-system.css` 已有定义时优先使用已有定义
+
+### 不可违反
+
+- `design-system.css` 的变量值（颜色、字体、圆角、阴影）
+- `web-design-guidelines` 的 a11y 要求（aria-label、focus-visible、语义标签）
+- `shadcn-vue` 的裸 UI 禁止（不可写 raw button/input/dialog 等）
+
 ## 开发命令
 
 ```bash

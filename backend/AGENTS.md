@@ -2,6 +2,10 @@
 
 Spring Boot 3.5.14 · Java 17 · MyBatis-Plus 3.5.15 · PostgreSQL · Redis · Quartz · Flyway
 
+## 强制技能
+
+**后端开发必须加载 `springboot-web-dev` 技能指导所有开发工作。** 该技能包含完整的编码规范、架构约定、检查清单（项目结构、接口规范、Controller/Service/Mapper/MapStruct、事务、异常、日志、测试、Flyway、参数校验、字典、Javadoc 等 18 个模块）。
+
 ## 入口
 
 - 主类: `com.dfec.soft.secret.SecretApp`
