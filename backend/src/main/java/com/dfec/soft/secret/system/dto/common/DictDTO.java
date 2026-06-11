@@ -36,6 +36,14 @@ public class DictDTO {
      */
     private String remark;
     /**
+     * 状态 1-启用 0-禁用。
+     */
+    private Integer status;
+    /**
+     * 是否内置 1-是 0-否。
+     */
+    private Integer builtIn;
+    /**
      * 创建时间。
      */
     private LocalDateTime createdAt;
@@ -50,6 +58,10 @@ public class DictDTO {
     public void setDataValueType(String dataValueType) { this.dataValueType = dataValueType; }
     public String getRemark() { return remark; }
     public void setRemark(String remark) { this.remark = remark; }
+    public Integer getStatus() { return status; }
+    public void setStatus(Integer status) { this.status = status; }
+    public Integer getBuiltIn() { return builtIn; }
+    public void setBuiltIn(Integer builtIn) { this.builtIn = builtIn; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 

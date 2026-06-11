@@ -1,11 +1,13 @@
 package com.dfec.soft.secret.system.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.dfec.soft.secret.system.dto.common.DictDTO;
 import com.dfec.soft.secret.common.dto.common.PageResponse;
 import com.dfec.soft.secret.system.dto.request.DictPageRequest;
+import com.dfec.soft.secret.common.exception.OuterException;
 import com.dfec.soft.secret.system.entity.SysDict;
 import com.dfec.soft.secret.system.mapper.DictMapper;
 import java.util.Arrays;
@@ -94,6 +96,19 @@ class DictServiceTest {
         assertThat(result).containsExactly(id1, id2);
         assertThat(dictMapper.selectById(id1)).isNull();
         assertThat(dictMapper.selectById(id2)).isNull();
+    }
+
+    @Test
+    void shouldRejectDuplicateDictCode() {
+        createDict("字典A", "dup_code");
+
+        DictDTO request = new DictDTO();
+        request.setDictName("字典B");
+        request.setDictCode("dup_code");
+
+        assertThatThrownBy(() -> dictService.create(request, "test-user"))
+            .isInstanceOf(OuterException.class)
+            .hasMessageContaining("字典编码已存在");
     }
 
     private String createDict(String dictName, String dictCode) {

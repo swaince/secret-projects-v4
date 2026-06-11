@@ -6,7 +6,7 @@ import {
   LayoutDashboard, FileText, FolderTree, MessageSquareText, Settings,
   Users, UserRound, ShieldCheck, LockKeyhole, Building2, Building,
   BriefcaseBusiness, Menu, SlidersHorizontal, Activity, UserCheck,
-  Server, Database, ScrollText, LogIn, ClipboardList,
+  Server, Database, ScrollText, LogIn, ClipboardList, BookType,
 } from '@lucide/vue'
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
@@ -31,7 +31,7 @@ const iconMap: Record<string, unknown> = {
   LayoutDashboard, FileText, FolderTree, MessageSquareText, Settings,
   Users, UserRound, ShieldCheck, LockKeyhole, Building2, Building,
   BriefcaseBusiness, Menu, SlidersHorizontal, Activity, UserCheck,
-  Server, Database, ScrollText, LogIn, ClipboardList,
+  Server, Database, ScrollText, LogIn, ClipboardList, BookType,
 }
 
 function resolveIcon(name: string) {

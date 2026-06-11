@@ -1,4 +1,4 @@
-import type { RouteRecordRaw } from 'vue-router'
+import type { RouteRecordRaw, RouteComponent } from 'vue-router'
 import PlaceholderView from '@/views/PlaceholderView.vue'
 
 export interface MenuItem {
@@ -6,6 +6,7 @@ export interface MenuItem {
   title: string
   icon?: string
   path?: string
+  component?: RouteComponent | (() => Promise<RouteComponent | { default: RouteComponent }>)
   children?: MenuItem[]
   meta?: {
     breadcrumb?: string
@@ -44,6 +45,13 @@ export const menuConfig: MenuItem[] = [
         ],
       },
       { id: 'menu-config', title: '菜单配置', icon: 'Menu', path: '/system/menus' },
+      {
+        id: 'dict-list',
+        title: '字典管理',
+        icon: 'BookType',
+        path: '/system/dict',
+        component: () => import('@/views/system/dict/Index.vue'),
+      },
       { id: 'param-config', title: '参数设置', icon: 'SlidersHorizontal', path: '/system/params' },
     ],
   },
@@ -73,7 +81,7 @@ export function createRoutesFromMenu(items: MenuItem[]): RouteRecordRaw[] {
       routes.push({
         path: item.path,
         name: item.id,
-        component: PlaceholderView,
+        component: item.component ?? PlaceholderView,
         meta: { title: item.title, ...item.meta },
       })
     }

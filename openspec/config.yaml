@@ -32,6 +32,8 @@ context: |
 
   **强制规则：每个 artifact 阶段开始前，必须先读取与变更范围匹配的 AGENTS.md，并严格按其规范执行。**
 
+  **文档语言：所有生成的 artifact 文档必须使用简体中文。**
+
 rules:
   brainstorm:
     - 开始前必须读取与变更范围匹配的 AGENTS.md，按其中技术要点约束设计选择

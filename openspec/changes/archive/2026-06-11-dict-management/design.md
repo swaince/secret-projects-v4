@@ -42,11 +42,12 @@ secret-projects-v4 前端已有 admin-layout 布局组件，后端 `springboot-w
 - **理由**：字典项通常数量不多（<100 条），无需分页；抽屉避免页面跳转，操作流畅
 - **已考虑 alternative**：两级菜单（字典列表页 → 点击进入字典项页）——页面跳转割裂体验，不符合后台管理习惯
 
-### D4：后端模块归属 — common 包
+### D4：后端模块归属 — system 包
 
-- **选择**：字典模块放在 `common/` 下（controller/service/mapper/entity/dto），作为跨模块共享基础设施
-- **理由**：字典被所有业务模块引用（用户状态、部门类型等），放在 common 包符合 `springboot-web-dev` 项目结构规范
-- **已考虑 alternative**：放在 `system/` 下——字典作为基础设施不应归属特定模块
+- **选择**：字典模块放在 `system/` 下（controller/service/mapper/entity/dto），归属系统管理模块
+- **理由**：字典管理（CRUD 页面、管理接口）属于系统管理范畴，与用户、角色、菜单等系统级功能同层；`common/` 仅放通用基础设施（R、PageResponse、异常、枚举等）
+- **已考虑 alternative**：放在 `common/` 下——但字典的 Controller/Service/Mapper 属于业务代码而非通用基础设施
+- **偏离原始设计**：初始设计选择 common 包，实现阶段调整为 system 包以保持业务模块边界清晰
 
 ### D5：data_value_type 字段
 

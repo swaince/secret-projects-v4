@@ -90,6 +90,17 @@ public class DictItemController {
     }
 
     /**
+     * 删除指定字典下的所有字典项。
+     *
+     * @param dictId 字典 ID
+     * @return 被删除的字典项 ID 列表
+     */
+    @DeleteMapping("/all")
+    public R<List<String>> deleteAllByDictId(@PathVariable String dictId) {
+        return R.ok(dictItemService.deleteByDictId(dictId));
+    }
+
+    /**
      * 根据 ID 删除字典项。
      *
      * @param itemId 字典项 ID

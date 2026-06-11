@@ -63,6 +63,9 @@ public class DictServiceImpl implements DictService {
         if (StringUtils.isNotBlank(request.getDictName())) {
             wrapper.like(SysDict::getDictName, request.getDictName());
         }
+        if (StringUtils.isNotBlank(request.getDataValueType())) {
+            wrapper.eq(SysDict::getDataValueType, request.getDataValueType());
+        }
         long total = dictMapper.selectCount(wrapper);
         wrapper.orderByAsc(SysDict::getDictCode);
         Page<SysDict> pageParam = new Page<>(request.getPage(), request.getSize(), false);
@@ -94,6 +97,12 @@ public class DictServiceImpl implements DictService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public DictDTO create(DictDTO request, String createdBy) {
+        LambdaQueryWrapper<SysDict> codeCheck = new LambdaQueryWrapper<>();
+        codeCheck.eq(SysDict::getDictCode, request.getDictCode())
+                .eq(SysDict::getDeleted, Deleted.NO.getValue());
+        if (dictMapper.selectCount(codeCheck) > 0) {
+            throw new OuterException(BizCode.CONFLICT, "字典编码已存在");
+        }
         SysDict entity = dictStructMapper.requestToEntity(request);
         entity.setDictId(uidService.next());
         entity.setCreatedAt(LocalDateTime.now());
@@ -171,7 +180,11 @@ public class DictServiceImpl implements DictService {
         LambdaQueryWrapper<SysDict> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysDict::getDictId, dictId)
                 .eq(SysDict::getDeleted, Deleted.NO.getValue());
-        return dictMapper.selectOne(wrapper);
+        SysDict entity = dictMapper.selectOne(wrapper);
+        if (entity == null) {
+            throw new OuterException(BizCode.NOT_FOUND, "字典不存在");
+        }
+        return entity;
     }
 
 }

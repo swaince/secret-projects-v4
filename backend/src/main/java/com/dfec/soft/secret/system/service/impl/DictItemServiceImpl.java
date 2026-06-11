@@ -120,14 +120,12 @@ public class DictItemServiceImpl implements DictItemService {
     public List<String> delete(List<String> itemIds, String userId) {
         for (String itemId : itemIds) {
             SysDictItem entity = selectByIdNotDeleted(itemId);
-            if (entity != null) {
-                if (entity.getBuiltIn() != null && entity.getBuiltIn().equals(Builtin.YES.getValue())) {
-                    throw new OuterException(BizCode.FORBIDDEN, "内置字典项不可删除");
-                }
-                entity.setUpdatedBy(userId);
-                entity.setUpdatedAt(LocalDateTime.now());
-                dictItemMapper.updateById(entity);
+            if (entity.getBuiltIn() != null && entity.getBuiltIn().equals(Builtin.YES.getValue())) {
+                throw new OuterException(BizCode.FORBIDDEN, "内置字典项不可删除");
             }
+            entity.setUpdatedBy(userId);
+            entity.setUpdatedAt(LocalDateTime.now());
+            dictItemMapper.updateById(entity);
         }
         dictItemMapper.deleteByIds(itemIds);
         return itemIds;
@@ -200,7 +198,11 @@ public class DictItemServiceImpl implements DictItemService {
         LambdaQueryWrapper<SysDictItem> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysDictItem::getDictItemId, itemId)
                 .eq(SysDictItem::getDeleted, Deleted.NO.getValue());
-        return dictItemMapper.selectOne(wrapper);
+        SysDictItem entity = dictItemMapper.selectOne(wrapper);
+        if (entity == null) {
+            throw new OuterException(BizCode.NOT_FOUND, "字典项不存在");
+        }
+        return entity;
     }
 
 }

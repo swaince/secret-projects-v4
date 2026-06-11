@@ -92,6 +92,25 @@ class DictItemControllerTest {
     }
 
     @Test
+    void shouldDeleteAllItemsByDictId() throws Exception {
+        DictItemDTO item = new DictItemDTO();
+        item.setItemKey("k1");
+        item.setItemValue("v1");
+        mockMvc.perform(post("/dicts/" + dictId + "/items")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(item)))
+            .andExpect(status().isOk());
+
+        mockMvc.perform(delete("/dicts/" + dictId + "/items/all"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value(200))
+            .andExpect(jsonPath("$.data").isArray());
+
+        mockMvc.perform(get("/dicts/" + dictId + "/items"))
+            .andExpect(jsonPath("$.data.length()").value(0));
+    }
+
+    @Test
     void shouldDeleteItem() throws Exception {
         DictItemDTO request = new DictItemDTO();
         request.setItemKey("key");

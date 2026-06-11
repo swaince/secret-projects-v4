@@ -6,6 +6,7 @@ import com.dfec.soft.secret.system.dto.common.DictDTO;
 import com.dfec.soft.secret.common.dto.common.PageResponse;
 import com.dfec.soft.secret.common.dto.common.R;
 import com.dfec.soft.secret.system.dto.request.DictPageRequest;
+import com.dfec.soft.secret.system.service.DictItemService;
 import com.dfec.soft.secret.system.service.DictService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import com.dfec.soft.secret.common.annotation.TokenParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,9 +34,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class DictController {
 
     private final DictService dictService;
+    private final DictItemService dictItemService;
 
-    public DictController(DictService dictService) {
+    public DictController(DictService dictService, DictItemService dictItemService) {
         this.dictService = dictService;
+        this.dictItemService = dictItemService;
     }
 
     /**
@@ -97,6 +101,17 @@ public class DictController {
     public R<List<String>> delete(@NotEmpty @RequestBody List<String> dictIds,
             @TokenParam("userId") String userId) {
         return R.ok(dictService.delete(dictIds, userId));
+    }
+
+    /**
+     * 根据字典编码删除所有字典项。
+     *
+     * @param dictCode 字典编码
+     * @return 被删除的字典项 ID 列表
+     */
+    @DeleteMapping("/items/by-code")
+    public R<List<String>> deleteItemsByDictCode(@RequestParam String dictCode) {
+        return R.ok(dictItemService.deleteByDictCode(dictCode));
     }
 
     /**
