@@ -60,6 +60,7 @@ public class SysUser {
 ### 规则
 
 - 每个字段显式 @TableField，禁止省略（主键仅 @TableId）
+- 审计字段禁止 `@TableField(fill = FieldFill.INSERT/INSERT_UPDATE)`，应用层手动设置
 - 禁止 boolean/BOOLEAN，统一 Integer(0/1)
 - 使用 LocalDateTime，不用 Date
 - 主键 IdType.INPUT，应用层生成 UUID v7
@@ -105,6 +106,17 @@ public class UserDetailResponse extends UserDTO {
 - DTO 复用第一原则：优先 common DTO，不满足再创建 request/response
 - request/response 可 extends common DTO，仅限 dto 包内部
 - 禁止 DTO 继承 Entity
+
+### 创建前强制检查
+
+创建 request/response 之前必须自问，全部为"否"才能创建：
+
+1. 现有 common DTO 字段是否覆盖所有入参？ → 能覆盖则直接复用
+2. 能否通过分组校验（`@Validated(Group.class)`）区分场景？ → 能则复用
+3. 新类字段是否与 common DTO 完全一致？ → **禁止创建**
+4. common DTO 多出的字段（如 id、createdAt）能否由 Service 生成覆盖？ → 能则复用，传 null 即可
+
+**核心原则：宁可 DTO 有冗余 null 字段，不可因"字段不完全匹配"而新建 Request。**
 
 ## 检查清单
 

@@ -105,6 +105,8 @@ public class UserController {
 }
 ```
 
+Controller 方法与 Service 统一命名。**方法参数不超过 3 个，尽可能少。**
+
 ## 检查清单
 
 - [ ] 类级别添加 Javadoc（含 @author）

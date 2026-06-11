@@ -2,7 +2,7 @@
 
 ## 基本模式
 
-注入 Mapper，通过 `userMapper.xxx()` 直接操作数据库。**禁止** `IService<T>` / `ServiceImpl<M, T>`。
+接口放在 `service/`，实现放在 `service/impl/`。注入 Mapper，通过 `userMapper.xxx()` 直接操作数据库。**禁止** `IService<T>` / `ServiceImpl<M, T>`。
 
 ## 返回约定
 
@@ -134,6 +134,21 @@ public class UserServiceImpl implements UserService {
     }
 }
 ```
+
+**方法参数不超过 3 个，尽可能少。** 超过时合并为请求对象。
+
+**优先方法级复用，避免代码重复。** 重复出现的逻辑（校验、转换、组装）必须抽取为私有方法，禁止多处复制粘贴。
+
+正例：
+```java
+// 抽取共用校验
+private SysDict getDictOrThrow(String dictId) {
+    SysDict dict = dictMapper.selectById(dictId);
+    if (dict == null) { throw new OuterException(BizCode.NOT_FOUND, "字典不存在"); }
+    return dict;
+}
+```
+反例：`update` 和 `deleteById` 各写一遍 `selectById + null check`。
 
 ## 检查清单
 

@@ -22,6 +22,8 @@ Spring Boot 3.5.14 · Java 17 · MyBatis-Plus 3.5 · PostgreSQL · Redis · Quar
 | 事务 | [references/transaction.md](references/transaction.md) | @Transactional 标准用法 |
 | 异常 | [references/exception.md](references/exception.md) | BizCode、异常层次、全局处理器 |
 | Web 配置 | [references/web-config.md](references/web-config.md) | UTF-8 编码 |
+| @TokenParam | [references/token-param.md](references/token-param.md) | Token 参数解析 |
+| UidService | [references/uid-service.md](references/uid-service.md) | UUID v7 生成器 |
 | 日志 | [references/logging.md](references/logging.md) | SLF4J + LOGGER |
 | 测试 | [references/testing.md](references/testing.md) | H2、TDD 方法论、测试模板 |
 | Flyway | [references/flyway.md](references/flyway.md) | 命名规范、标准 SQL、COMMENT ON |

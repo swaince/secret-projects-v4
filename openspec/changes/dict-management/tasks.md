@@ -1,11 +1,11 @@
 ## 1. 数据库迁移
 
-- [ ] 1.1 创建 Flyway 迁移脚本 `V1.0.0.1__create_dict_table.sql`（sys_dict + sys_dict_item DDL，含 COMMENT ON）
+- [x] 1.1 创建 Flyway 迁移脚本 `V1.0.0.1__create_dict_table.sql`（sys_dict + sys_dict_item DDL，含 COMMENT ON）
 - [ ] 1.2 运行 `./mvnw flyway:migrate -pl backend` 确认迁移成功
 
 ## 2. Entity + DTO（后端基础设施）
 
-- [ ] 2.1 创建 `common/entity/SysDict.java`（含 @TableField + 审计字段 + Javadoc）
+- [x] 2.1 创建 `common/entity/SysDict.java`（含 @TableField + 审计字段 + Javadoc）
 - [ ] 2.2 创建 `common/entity/SysDictItem.java`（含 @TableField + 审计字段 + Javadoc）
 - [ ] 2.3 创建 `common/dto/common/DictDTO.java`（类 + 字段 Javadoc）
 - [ ] 2.4 创建 `common/dto/common/DictItemDTO.java`（类 + 字段 Javadoc）
@@ -15,14 +15,14 @@
 
 ## 3. Mapper + MapStruct（后端）
 
-- [ ] 3.1 创建 `common/mapper/DictMapper.java` extends BaseMapper\<SysDict\>
+- [x] 3.1 创建 `common/mapper/DictMapper.java` extends BaseMapper\<SysDict\>
 - [ ] 3.2 创建 `common/mapper/DictItemMapper.java` extends BaseMapper\<SysDictItem\>
 - [ ] 3.3 创建 `common/mapstruct/DictStructMapper.java`（entityToDTO, requestToEntity, updateEntity）
 - [ ] 3.4 创建 `common/mapstruct/DictItemStructMapper.java`（同上）
 
 ## 4. DictService（TDD 先行）
 
-- [ ] 4.1 编写 `DictServiceTest.java` 测试用例（分页/新增/修改/删除/批量删/编码唯一）
+- [x] 4.1 编写 `DictServiceTest.java` 测试用例（分页/新增/修改/删除/批量删/编码唯一）
 - [ ] 4.2 运行 `./mvnw test -pl backend -Dtest=DictServiceTest` 确认 RED
 - [ ] 4.3 创建 `common/service/DictService.java` 接口（含方法 Javadoc）
 - [ ] 4.4 创建 `common/service/DictServiceImpl.java` 实现

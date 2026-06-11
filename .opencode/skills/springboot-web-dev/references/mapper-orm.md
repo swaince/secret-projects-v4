@@ -71,6 +71,12 @@ userMapper.update(null,
 ```
 
 **禁止** `@TableLogic`（逻辑删除）和 `@Version`（乐观锁）。
+- **禁止 `@TableField(fill = FieldFill.INSERT/INSERT_UPDATE)` 自动填充审计字段**。审计字段由应用层手动设置。
+
+## 通用查询规则
+
+- 所有查询必须排除软删除数据：`queryWrapper.eq(Entity::getDeleted, Deleted.NO.getValue())`
+- 内置数据（`builtIn = 1`）除特殊声明外，禁止修改和删除（Service 层校验）
 
 ## XML Mapper
 
@@ -87,6 +93,9 @@ mybatis-plus:
 - [ ] 每个字段显式 @TableField 标注映射
 - [ ] 主键 @TableId(type = IdType.INPUT)，应用层生成 UUID v7
 - [ ] 无 @TableLogic / @Version
+- [ ] 审计字段手动设置，无 @TableField(fill = ...)
+- [ ] 所有查询添加 deleted = 0 条件
+- [ ] 内置数据删除/修改前校验 builtIn
 - [ ] 变量名完整（queryWrapper 非 qw）
 - [ ] Boolean/boolean 禁止，统一 Integer(0/1)
 - [ ] XML Mapper 放在 resources/mappers/{module}/

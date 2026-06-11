@@ -3,3 +3,16 @@ server:
 spring:
   application:
     name: backend
+  datasource:
+    url: jdbc:postgresql://192.168.2.160:5432/secret
+    username: secret
+    password: 12345678
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  data:
+    redis:
+      host: 192.168.2.160
+      port: 6379
+      password: 12345678

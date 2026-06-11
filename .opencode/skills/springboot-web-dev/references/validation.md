@@ -31,10 +31,20 @@ public class UserCreateRequest {
 
 ## 分组校验
 
-```java
-public interface Create {}
-public interface Update {}
+使用 `common/validation/group/` 下的共享分组接口，禁止每个模块重复定义。
 
+```java
+// common/validation/group/Create.java
+public interface Create {}
+// common/validation/group/Update.java
+public interface Update {}
+```
+
+使用：
+
+```java
+import com.dfec.soft.secret.common.validation.group.Create;
+import com.dfec.soft.secret.common.validation.group.Update;
 /**
  * 用户请求（分组校验示例）。
  *
@@ -99,54 +109,32 @@ Controller + Service 双重校验。
 ### 标准校验（接口 + 实现双向声明）
 
 ```java
-// 接口
+// 接口：定义校验契约
 UserDTO create(@Valid UserCreateRequest request);
 
-// 实现
-@Override @Validated
-public UserDTO create(@Valid UserCreateRequest request) { ... }
-```
-
-### 分组校验（接口声明分组 + 实现配合 @Validated）
-
-```java
-/**
- * 字典项服务接口。
- */
-public interface DictionaryItemService {
-
-    /**
-     * 新增字典项。
-     *
-     * @param dictionaryItem 字典项
-     * @return 创建后的字典项
-     */
-    @Validated(Creating.class)
-    DictionaryItemDTO create(@Valid DictionaryItemDTO dictionaryItem);
-
-    /**
-     * 更新字典项。
-     *
-     * @param dictionaryItem 字典项信息
-     * @return 更新后的字典项
-     */
-    @Validated(Updating.class)
-    DictionaryItemDTO update(@Valid DictionaryItemDTO dictionaryItem);
-}
-
-/**
- * 字典项服务实现。
- */
+// 实现类：@Validated 触发，不重复 @Valid
 @Service
 @Validated
-public class DictionaryItemServiceImpl implements DictionaryItemService {
-
+public class UserServiceImpl implements UserService {
     @Override
-    public DictionaryItemDTO create(@Valid DictionaryItemDTO dictionaryItem) { ... }
-
-    @Override
-    public DictionaryItemDTO update(@Valid DictionaryItemDTO dictionaryItem) { ... }
+    public UserDTO create(UserCreateRequest request) { ... }
 }
+```
+
+### 分组校验（接口声明分组，实现不重复）
+
+```java
+// 接口
+@Validated(Creating.class)
+DictionaryItemDTO create(@Valid DictionaryItemDTO dictionaryItem);
+
+// 实现类：不重复
+@Override
+public DictionaryItemDTO create(DictionaryItemDTO dictionaryItem) { ... }
+```
+
+- **接口**：声明校验注解，定义契约
+- **实现类**：类级别加 `@Validated` 触发，参数上不重复声明
 ```
 
 - 接口声明 `@Validated(Group.class)` 定义校验契约

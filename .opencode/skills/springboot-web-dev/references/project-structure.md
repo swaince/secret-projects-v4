@@ -12,15 +12,18 @@ com.dfec.soft.secret
 │   ├── dto/                   # 公共 DTO
 │   └── exception/             # 全局异常定义
 ├── system/                    # 系统管理模块
-│   ├── controller/            # UserController, RoleController
-│   ├── service/               # UserService, UserServiceImpl
-│   ├── mapper/                # UserMapper, RoleMapper
-│   ├── entity/                # SysUser, SysRole
+│   ├── controller/
+│   ├── service/
+│   │   ├── UserService.java       # 接口
+│   │   └── impl/
+│   │       └── UserServiceImpl.java  # 实现
+│   ├── mapper/
+│   ├── entity/
 │   ├── dto/
-│   │   ├── common/            # UserDTO（与 Entity 一对一）
-│   │   ├── request/           # QueryRequest(基类), UserCreateRequest
-│   │   └── response/          # UserDetailResponse
-│   └── mapstruct/             # UserStructMapper
+│   │   ├── common/
+│   │   ├── request/
+│   │   └── response/
+│   └── mapstruct/
 ├── content/                   # 内容管理模块
 │   └── ...
 └── config/                    # 全局 @Configuration
@@ -82,6 +85,30 @@ dto/
 @RequestMapping("/users")
 public class UserController { }
 ```
+
+## 初始化门禁
+
+**业务模块开发前，必须先初始化 common 模块。** 门禁检查：`./mvnw compile -pl backend && ./mvnw test -pl backend` 必须双绿。
+
+| 组件 | 位置 | 要求 |
+|------|------|------|
+| R\<T\> | common/dto/common/ | 已创建，PMD 通过 |
+| PageResponse\<T\> | common/dto/common/ | 已创建 |
+| QueryRequest | common/dto/request/ | 已创建 |
+| BizCode | common/constants/ | 实现 DictionaryElement |
+| DictionaryElement\<T\> | common/constants/ | 方法含 Javadoc |
+| @Dictionary 注解 | common/constants/ | 已创建，含 Javadoc |
+| Status / DataValueType | common/constants/ | 实现 DictionaryElement，**添加 @Dictionary 注解** |
+| BusinessException / OuterException / InnerException | common/exception/ | 完整异常层次 |
+| GlobalExceptionHandler | common/config/ | 10 个处理器 |
+| HealthController | common/controller/ | GET /health |
+| UidService | common/service/ + impl/ | UUID v7 生成器，已注册 @Service |
+| @TokenParam | common/annotation/ + resolver/ + config/ | 已创建，Controller 使用 |
+| Create / Update 分组接口 | common/validation/group/ | 已创建，禁止模块内重复定义 |
+| PMD | — | BUILD SUCCESS |
+| 测试 | — | 全部通过 |
+
+门禁不通过，禁止开始业务模块开发。
 
 ## 开发流程
 
