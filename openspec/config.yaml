@@ -20,3 +20,28 @@ schema: superpowers-bridge
 #     tasks:
 #       - Break tasks into chunks of max 2 hours
 ## ===== DO NOT REMOVE END =====
+
+context: |
+  Maven 多模块项目，含 backend（Spring Boot 3.5.x + Java 17 + MyBatis-Plus + PostgreSQL）和 frontend（Vue 3.5 + Vite 8 + TypeScript 6 + Tailwind CSS v4 + shadcn-vue + pnpm）。
+
+  项目含三个 AGENTS.md，按变更涉及的技术栈按需加载：
+
+  - 根目录 `AGENTS.md`：全局规范（Maven 多模块构建、OpenSpec 工作流、强制 TDD、文档用简体中文）
+  - `frontend/AGENTS.md`：前端技术要点（shadcn-vue must use、design-system.css 最终决定权、Reka UI llms.txt、pnpm 命令、Tailwind v4 CSS-first）
+  - `backend/AGENTS.md`：后端技术要点（Spring Boot 入口 com.dfec.soft.secret.SecretApp、MyBatis-Plus 非 JPA、MapStruct、Flyway PostgreSQL、H2 测试、PMD+P3C）
+
+  **强制规则：每个 artifact 阶段开始前，必须先读取与变更范围匹配的 AGENTS.md，并严格按其规范执行。**
+
+rules:
+  brainstorm:
+    - 开始前必须读取与变更范围匹配的 AGENTS.md，按其中技术要点约束设计选择
+  design:
+    - 开始前必须读取与变更范围匹配的 AGENTS.md，设计决策必须符合其中定义的技术栈和开发规范
+  proposal:
+    - 开始前必须读取与变更范围匹配的 AGENTS.md，影响分析必须覆盖其中列出的技术约束
+  specs:
+    - 开始前必须读取与变更范围匹配的 AGENTS.md，规范定义必须兼容其技术栈
+  tasks:
+    - 开始前必须读取与变更范围匹配的 AGENTS.md，任务拆分必须使用其中定义的开发命令和工具链
+  plan:
+    - 开始前必须读取与变更范围匹配的 AGENTS.md，实施步骤必须引用其中的具体命令（pnpm dev、./mvnw test 等）
