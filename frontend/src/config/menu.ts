@@ -44,10 +44,11 @@ export const menuConfig: MenuItem[] = [
         component: () => import('@/views/system/RoleView.vue'),
       },
       {
-        id: 'org-mgmt', title: '组织架构', icon: 'Building2',
-        children: [
-          { id: 'dept-list', title: '部门管理', icon: 'Building', path: '/system/depts' },
-        ],
+        id: 'dept-list',
+        title: '部门管理',
+        icon: 'Building',
+        path: '/system/depts',
+        component: () => import('@/views/system/DeptView.vue'),
       },
       {
         id: 'post-list',
