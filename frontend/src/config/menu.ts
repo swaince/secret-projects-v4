@@ -33,9 +33,15 @@ export const menuConfig: MenuItem[] = [
         id: 'user-mgmt', title: '用户管理', icon: 'Users',
         children: [
           { id: 'user-list', title: '用户列表', icon: 'UserRound', path: '/system/users' },
-          { id: 'role-list', title: '角色管理', icon: 'ShieldCheck', path: '/system/roles', component: () => import('@/views/system/RoleView.vue') },
           { id: 'perm-list', title: '权限配置', icon: 'LockKeyhole', path: '/system/permissions' },
         ],
+      },
+      {
+        id: 'role-list',
+        title: '角色管理',
+        icon: 'ShieldCheck',
+        path: '/system/roles',
+        component: () => import('@/views/system/RoleView.vue'),
       },
       {
         id: 'org-mgmt', title: '组织架构', icon: 'Building2',
