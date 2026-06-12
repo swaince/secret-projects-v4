@@ -12,7 +12,7 @@ vi.mock('@/api/dict', () => ({
 }))
 
 import { fetchDicts, fetchDictItems } from '@/api/dict'
-import DictIndex from '@/views/system/dict/Index.vue'
+import DictIndex from '@/views/system/DictView.vue'
 
 const mockDicts: DictDTO[] = [
   {

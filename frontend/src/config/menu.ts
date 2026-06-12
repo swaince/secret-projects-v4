@@ -50,7 +50,7 @@ export const menuConfig: MenuItem[] = [
         title: '字典管理',
         icon: 'BookType',
         path: '/system/dict',
-        component: () => import('@/views/system/dict/Index.vue'),
+        component: () => import('@/views/system/DictView.vue'),
       },
       { id: 'param-config', title: '参数设置', icon: 'SlidersHorizontal', path: '/system/params' },
     ],

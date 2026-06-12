@@ -14,8 +14,6 @@ import {
 import {
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
 } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -59,7 +57,7 @@ import { Badge } from '@/components/ui/badge'
 import { Search, RotateCcw, Plus, Trash2, Pencil, Eye, Check, Minus, X } from '@lucide/vue'
 import type { DictDTO, DictPageParams, PageResponse } from '@/api/dict'
 import { fetchDicts, createDict, updateDict, deleteDict, deleteDicts } from '@/api/dict'
-import DictItemDrawer from './components/DictItemDrawer.vue'
+import DictItemDrawer from '@/components/system/DictItemDrawer.vue'
 
 const dicts = ref<DictDTO[]>([])
 const total = ref(0)
@@ -297,6 +295,7 @@ onMounted(loadDicts)
               <TableCell @click.stop>
                 <Checkbox
                   :model-value="selected.includes(dict.dictId)"
+                  :disabled="dict.builtIn === 1"
                   @update:model-value="toggleSelect(dict.dictId, !!$event)"
                 />
               </TableCell>
@@ -319,13 +318,13 @@ onMounted(loadDicts)
               <TableCell class="truncate">{{ dict.remark }}</TableCell>
               <TableCell class="text-center" @click.stop>
                 <div class="flex justify-center gap-1">
-                  <Button variant="ghost" size="sm" class="text-primary" @click="openEdit(dict)">
+                  <Button variant="ghost" size="sm" class="text-primary" :disabled="dict.builtIn === 1" @click="openEdit(dict)">
                     <Pencil class="size-4" />编辑
                   </Button>
                   <Button variant="ghost" size="sm" class="text-amber-500" @click="handleRowClick(dict)">
                     <Eye class="size-4" />详情
                   </Button>
-                  <Button variant="ghost" size="sm" class="text-destructive" @click="handleDelete(dict.dictId)">
+                  <Button variant="ghost" size="sm" class="text-destructive" :disabled="dict.builtIn === 1" @click="handleDelete(dict.dictId)">
                     <Trash2 class="size-4" />删除
                   </Button>
                 </div>
@@ -456,14 +455,14 @@ onMounted(loadDicts)
     </Dialog>
 
     <AlertDialog v-model:open="confirmOpen">
-      <AlertDialogContent>
+      <AlertDialogContent :disable-outside-pointer-events="true">
         <AlertDialogHeader>
           <AlertDialogTitle>确认操作</AlertDialogTitle>
           <AlertDialogDescription>{{ confirmMessage }}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>取消</AlertDialogCancel>
-          <AlertDialogAction @click="executeConfirm">确定</AlertDialogAction>
+          <AlertDialogCancel size="sm"><X class="size-4" />取消</AlertDialogCancel>
+          <AlertDialogAction size="sm" @click="executeConfirm"><Check class="size-4" />确定</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

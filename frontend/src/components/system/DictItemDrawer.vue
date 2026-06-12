@@ -58,6 +58,8 @@ const emit = defineEmits<{
   'update:open': [value: boolean]
 }>()
 
+const isBuiltIn = computed(() => props.dict?.builtIn === 1)
+
 const items = ref<DictItemDTO[]>([])
 const selected = ref<string[]>([])
 const dialogOpen = ref(false)
@@ -194,7 +196,7 @@ function toggleSelectAll() {
 
       <div class="mt-4 space-y-4">
         <div class="flex items-center gap-2 px-4">
-          <Button size="sm" @click="openCreate">
+          <Button size="sm" :disabled="isBuiltIn" @click="openCreate">
             <Plus class="size-4" />新增字典项
           </Button>
           <Button
@@ -213,6 +215,7 @@ function toggleSelectAll() {
               <TableHead class="w-10">
                 <Checkbox
                   :model-value="headerChecked"
+                  :disabled="isBuiltIn"
                   class="data-[state=indeterminate]:bg-primary data-[state=indeterminate]:text-primary-foreground data-[state=indeterminate]:border-primary"
                   @update:model-value="toggleSelectAll"
                 >
@@ -234,6 +237,7 @@ function toggleSelectAll() {
               <TableCell>
                 <Checkbox
                   :model-value="selected.includes(item.dictItemId)"
+                  :disabled="isBuiltIn"
                   @update:model-value="toggleSelect(item.dictItemId, !!$event)"
                 />
               </TableCell>
@@ -244,19 +248,20 @@ function toggleSelectAll() {
                 <Switch
                   size="sm"
                   :model-value="item.status === 1"
-                  :disabled="item.builtIn === 1"
+                  :disabled="isBuiltIn || item.builtIn === 1"
                   @update:model-value="(val: boolean) => handleToggleItemStatus(item, val)"
                 />
               </TableCell>
               <TableCell class="text-center">
                 <div class="flex justify-center gap-1">
-                  <Button variant="ghost" size="sm" class="text-primary" @click="openEdit(item)">
+                  <Button variant="ghost" size="sm" class="text-primary" :disabled="isBuiltIn" @click="openEdit(item)">
                     <Pencil class="size-4" />编辑
                   </Button>
                   <Button
                     variant="ghost"
                     size="sm"
                     class="text-destructive"
+                    :disabled="isBuiltIn"
                     @click="handleDelete(item.dictItemId)"
                   >
                     <Trash2 class="size-4" />删除
@@ -311,14 +316,14 @@ function toggleSelectAll() {
   </Dialog>
 
   <AlertDialog v-model:open="confirmOpen">
-    <AlertDialogContent>
+    <AlertDialogContent :disable-outside-pointer-events="true">
       <AlertDialogHeader>
         <AlertDialogTitle>确认操作</AlertDialogTitle>
         <AlertDialogDescription>{{ confirmMessage }}</AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
-        <AlertDialogCancel>取消</AlertDialogCancel>
-        <AlertDialogAction @click="executeConfirm">确定</AlertDialogAction>
+        <AlertDialogCancel size="sm"><X class="size-4" />取消</AlertDialogCancel>
+        <AlertDialogAction size="sm" @click="executeConfirm"><Check class="size-4" />确定</AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>

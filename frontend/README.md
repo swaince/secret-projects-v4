@@ -71,3 +71,15 @@ pnpm test:e2e --debug
 ```sh
 pnpm lint
 ```
+
+## 已知问题
+
+### AlertDialog 打开后无法关闭 / 按钮不可点击
+
+**现象**：AlertDialog 打开后，内部按钮（取消/确定）无法点击，页面 `body` 被设置为 `pointer-events: none` 但 content 缺少 `pointer-events: auto`。
+
+**原因**：reka-ui 的 `DismissableLayer` 存在 bug，`disableOutsidePointerEvents` 默认值未正确生效。
+
+**上游 Issue**：https://github.com/unovue/reka-ui/issues/2702
+
+**Workaround**：在使用 `<AlertDialogContent>` 时显式传递 `:disable-outside-pointer-events="true"`。待上游修复后可移除此 workaround。
