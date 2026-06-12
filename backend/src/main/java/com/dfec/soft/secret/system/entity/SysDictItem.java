@@ -33,6 +33,12 @@ public class SysDictItem {
     private String itemKey;
 
     /**
+     * 字典项标签。
+     */
+    @TableField("item_label")
+    private String itemLabel;
+
+    /**
      * 字典项值。
      */
     @TableField("item_value")
@@ -98,6 +104,8 @@ public class SysDictItem {
     public void setDictId(String dictId) { this.dictId = dictId; }
     public String getItemKey() { return itemKey; }
     public void setItemKey(String itemKey) { this.itemKey = itemKey; }
+    public String getItemLabel() { return itemLabel; }
+    public void setItemLabel(String itemLabel) { this.itemLabel = itemLabel; }
     public String getItemValue() { return itemValue; }
     public void setItemValue(String itemValue) { this.itemValue = itemValue; }
     public Integer getSortOrder() { return sortOrder; }
