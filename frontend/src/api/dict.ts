@@ -1,3 +1,5 @@
+import http from '@/utils/request'
+
 export interface DictDTO {
   dictId: string
   dictName: string
@@ -21,19 +23,6 @@ export interface DictItemDTO {
   createdAt: string
 }
 
-export interface PageResponse<T> {
-  records: T[]
-  total: number
-  page: number
-  size: number
-}
-
-export interface R<T> {
-  code: number
-  message: string
-  data: T
-}
-
 export interface DictPageParams {
   page: number
   size: number
@@ -41,53 +30,32 @@ export interface DictPageParams {
   dataValueType?: string
 }
 
-const BASE = '/api'
-
-async function request<T>(url: string, options?: RequestInit): Promise<T> {
-  const res = await fetch(`${BASE}${url}`, {
-    headers: { 'Content-Type': 'application/json' },
-    ...options,
-  })
-  const json: R<T> = await res.json()
-  if (json.code !== 200) throw new Error(json.message)
-  return json.data
-}
-
 export function fetchDicts(params: DictPageParams): Promise<PageResponse<DictDTO>> {
-  const query = new URLSearchParams({
-    page: String(params.page),
-    size: String(params.size),
-    ...(params.dictName ? { dictName: params.dictName } : {}),
-    ...(params.dataValueType ? { dataValueType: params.dataValueType } : {}),
-  })
-  return request<PageResponse<DictDTO>>(`/dicts?${query}`)
+  return http.get<PageResponse<DictDTO>>('/dicts', params)
 }
 
 export function createDict(data: Partial<DictDTO>): Promise<DictDTO> {
-  return request<DictDTO>('/dicts', { method: 'POST', body: JSON.stringify(data) })
+  return http.post<DictDTO>('/dicts', data)
 }
 
 export function updateDict(dictId: string, data: Partial<DictDTO>): Promise<DictDTO> {
-  return request<DictDTO>(`/dicts/${dictId}`, { method: 'PUT', body: JSON.stringify(data) })
+  return http.put<DictDTO>(`/dicts/${dictId}`, data)
 }
 
 export function deleteDict(dictId: string): Promise<string> {
-  return request<string>(`/dicts/${dictId}`, { method: 'DELETE' })
+  return http.delete<string>(`/dicts/${dictId}`)
 }
 
 export function deleteDicts(ids: string[]): Promise<string[]> {
-  return request<string[]>('/dicts', { method: 'DELETE', body: JSON.stringify(ids) })
+  return http.delete<string[]>('/dicts', ids)
 }
 
 export function fetchDictItems(dictId: string): Promise<DictItemDTO[]> {
-  return request<DictItemDTO[]>(`/dicts/${dictId}/items`)
+  return http.get<DictItemDTO[]>(`/dicts/${dictId}/items`)
 }
 
 export function createDictItem(dictId: string, data: Partial<DictItemDTO>): Promise<DictItemDTO> {
-  return request<DictItemDTO>(`/dicts/${dictId}/items`, {
-    method: 'POST',
-    body: JSON.stringify(data),
-  })
+  return http.post<DictItemDTO>(`/dicts/${dictId}/items`, data)
 }
 
 export function updateDictItem(
@@ -95,19 +63,13 @@ export function updateDictItem(
   itemId: string,
   data: Partial<DictItemDTO>,
 ): Promise<DictItemDTO> {
-  return request<DictItemDTO>(`/dicts/${dictId}/items/${itemId}`, {
-    method: 'PUT',
-    body: JSON.stringify(data),
-  })
+  return http.put<DictItemDTO>(`/dicts/${dictId}/items/${itemId}`, data)
 }
 
 export function deleteDictItem(dictId: string, itemId: string): Promise<string> {
-  return request<string>(`/dicts/${dictId}/items/${itemId}`, { method: 'DELETE' })
+  return http.delete<string>(`/dicts/${dictId}/items/${itemId}`)
 }
 
 export function deleteDictItems(dictId: string, ids: string[]): Promise<string[]> {
-  return request<string[]>(`/dicts/${dictId}/items`, {
-    method: 'DELETE',
-    body: JSON.stringify(ids),
-  })
+  return http.delete<string[]>(`/dicts/${dictId}/items`, ids)
 }

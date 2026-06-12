@@ -1,4 +1,4 @@
-import type { R } from '@/api/dict'
+import http from '@/utils/request'
 
 export interface DeptDTO {
   deptId: string
@@ -13,34 +13,22 @@ export interface DeptDTO {
   children: DeptDTO[]
 }
 
-const BASE = '/api'
-
-async function request<T>(url: string, options?: RequestInit): Promise<T> {
-  const res = await fetch(`${BASE}${url}`, {
-    headers: { 'Content-Type': 'application/json' },
-    ...options,
-  })
-  const json: R<T> = await res.json()
-  if (json.code !== 200) throw new Error(json.message)
-  return json.data
-}
-
 export function fetchDeptTree(): Promise<DeptDTO[]> {
-  return request<DeptDTO[]>('/depts')
+  return http.get<DeptDTO[]>('/depts')
 }
 
 export function createDept(data: Partial<DeptDTO>): Promise<DeptDTO> {
-  return request<DeptDTO>('/depts', { method: 'POST', body: JSON.stringify(data) })
+  return http.post<DeptDTO>('/depts', data)
 }
 
 export function updateDept(deptId: string, data: Partial<DeptDTO>): Promise<DeptDTO> {
-  return request<DeptDTO>(`/depts/${deptId}`, { method: 'PUT', body: JSON.stringify(data) })
+  return http.put<DeptDTO>(`/depts/${deptId}`, data)
 }
 
 export function deleteDept(deptId: string): Promise<string> {
-  return request<string>(`/depts/${deptId}`, { method: 'DELETE' })
+  return http.delete<string>(`/depts/${deptId}`)
 }
 
 export function deleteDepts(ids: string[]): Promise<string[]> {
-  return request<string[]>('/depts', { method: 'DELETE', body: JSON.stringify(ids) })
+  return http.delete<string[]>('/depts', ids)
 }

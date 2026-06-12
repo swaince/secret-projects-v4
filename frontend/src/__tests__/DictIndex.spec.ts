@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import { createRouter, createWebHistory } from 'vue-router'
-import type { PageResponse, DictDTO } from '@/api/dict'
+import type { DictDTO } from '@/api/dict'
 
 vi.mock('@/api/dict', () => ({
   fetchDicts: vi.fn<typeof import('@/api/dict').fetchDicts>(),

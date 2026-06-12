@@ -1,2 +1,47 @@
 @import "tailwind.css";
 @import "design-system.css";
+
+:root {
+  --toast-success-bg: oklch(0.965 0.026 145);
+  --toast-success-border: oklch(0.880 0.062 145);
+  --toast-success-text: oklch(0.400 0.120 145);
+  --toast-info-bg: oklch(0.965 0.015 var(--toast-info-hue, 262));
+  --toast-info-border: oklch(0.880 0.040 var(--toast-info-hue, 262));
+  --toast-info-text: oklch(0.450 0.150 var(--toast-info-hue, 262));
+  --toast-warning-bg: oklch(0.970 0.040 85);
+  --toast-warning-border: oklch(0.880 0.080 85);
+  --toast-warning-text: oklch(0.450 0.120 60);
+  --toast-error-bg: oklch(0.965 0.020 25);
+  --toast-error-border: oklch(0.880 0.060 25);
+  --toast-error-text: oklch(0.500 0.180 25);
+}
+
+[data-sonner-toaster][data-sonner-theme='dark'] {
+  --toast-success-bg: oklch(0.200 0.040 145);
+  --toast-success-border: oklch(0.300 0.060 145);
+  --toast-success-text: oklch(0.800 0.100 145);
+  --toast-info-bg: oklch(0.200 0.030 var(--toast-info-hue, 262));
+  --toast-info-border: oklch(0.300 0.050 var(--toast-info-hue, 262));
+  --toast-info-text: oklch(0.800 0.120 var(--toast-info-hue, 262));
+  --toast-warning-bg: oklch(0.200 0.040 85);
+  --toast-warning-border: oklch(0.300 0.060 85);
+  --toast-warning-text: oklch(0.800 0.100 60);
+  --toast-error-bg: oklch(0.200 0.035 25);
+  --toast-error-border: oklch(0.300 0.060 25);
+  --toast-error-text: oklch(0.800 0.140 25);
+}
+
+[data-sonner-toaster] {
+  --success-bg: var(--toast-success-bg);
+  --success-border: var(--toast-success-border);
+  --success-text: var(--toast-success-text);
+  --info-bg: var(--toast-info-bg);
+  --info-border: var(--toast-info-border);
+  --info-text: var(--toast-info-text);
+  --warning-bg: var(--toast-warning-bg);
+  --warning-border: var(--toast-warning-border);
+  --warning-text: var(--toast-warning-text);
+  --error-bg: var(--toast-error-bg);
+  --error-border: var(--toast-error-border);
+  --error-text: var(--toast-error-text);
+}

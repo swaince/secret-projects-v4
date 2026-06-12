@@ -55,7 +55,7 @@ import {
 import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
 import { Search, RotateCcw, Plus, Trash2, Pencil, Eye, Check, Minus, X } from '@lucide/vue'
-import type { DictDTO, DictPageParams, PageResponse } from '@/api/dict'
+import type { DictDTO, DictPageParams } from '@/api/dict'
 import { fetchDicts, createDict, updateDict, deleteDict, deleteDicts } from '@/api/dict'
 import DictItemDrawer from '@/components/system/DictItemDrawer.vue'
 

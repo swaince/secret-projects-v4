@@ -53,7 +53,6 @@ import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
 import { Search, RotateCcw, Plus, Trash2, Pencil, Check, Minus, X } from '@lucide/vue'
 import type { RoleDTO, RolePageParams } from '@/api/role'
-import type { PageResponse } from '@/api/dict'
 import { fetchRoles, createRole, updateRole, deleteRole, deleteRoles } from '@/api/role'
 
 const roles = ref<RoleDTO[]>([])

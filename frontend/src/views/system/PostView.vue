@@ -53,7 +53,6 @@ import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
 import { Search, RotateCcw, Plus, Trash2, Pencil, Check, Minus, X } from '@lucide/vue'
 import type { PostDTO, PostPageParams } from '@/api/post'
-import type { PageResponse } from '@/api/dict'
 import { fetchPosts, createPost, updatePost, deletePost, deletePosts } from '@/api/post'
 
 const posts = ref<PostDTO[]>([])
