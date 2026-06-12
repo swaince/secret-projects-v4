@@ -3,6 +3,15 @@ defineOptions({ name: 'DeptIndex' })
 
 import { ref, computed, onMounted } from 'vue'
 import { Card, CardContent } from '@/components/ui/card'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableEmpty,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -24,6 +33,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import {
   Plus,
@@ -33,7 +49,6 @@ import {
   ChevronDown,
   Check,
   X,
-  Building2,
 } from '@lucide/vue'
 import type { DeptDTO } from '@/api/dept'
 import { fetchDeptTree, createDept, updateDept, deleteDept } from '@/api/dept'
@@ -70,6 +85,50 @@ function flattenTree(nodes: DeptDTO[], depth: number): FlatNode[] {
 }
 
 const flatNodes = computed(() => flattenTree(tree.value, 0))
+
+function collectDescendantIds(nodes: DeptDTO[], result: Set<string>) {
+  for (const node of nodes) {
+    result.add(node.deptId)
+    if (node.children?.length) collectDescendantIds(node.children, result)
+  }
+}
+
+function findNode(nodes: DeptDTO[], id: string): DeptDTO | null {
+  for (const node of nodes) {
+    if (node.deptId === id) return node
+    if (node.children?.length) {
+      const found = findNode(node.children, id)
+      if (found) return found
+    }
+  }
+  return null
+}
+
+interface ParentOption {
+  id: string
+  label: string
+  depth: number
+}
+
+const parentOptions = computed<ParentOption[]>(() => {
+  const excludeIds = new Set<string>()
+  if (editingDept.value) {
+    excludeIds.add(editingDept.value.deptId)
+    const node = findNode(tree.value, editingDept.value.deptId)
+    if (node?.children?.length) collectDescendantIds(node.children, excludeIds)
+  }
+  const options: ParentOption[] = []
+  function walk(nodes: DeptDTO[], depth: number) {
+    for (const node of nodes) {
+      if (!excludeIds.has(node.deptId)) {
+        options.push({ id: node.deptId, label: node.deptName, depth })
+        if (node.children?.length) walk(node.children, depth + 1)
+      }
+    }
+  }
+  walk(tree.value, 0)
+  return options
+})
 
 function toggleExpand(deptId: string) {
   const s = new Set(expanded.value)
@@ -175,69 +234,60 @@ onMounted(loadTree)
     </div>
 
     <Card>
-      <CardContent class="p-4">
-        <div v-if="flatNodes.length === 0" class="text-muted-foreground flex items-center justify-center py-12 text-sm">
-          <Building2 class="mr-2 size-4" />暂无部门数据
-        </div>
-        <div v-else class="space-y-0.5">
-          <div
-            v-for="node in flatNodes"
-            :key="node.dept.deptId"
-            class="hover:bg-muted/50 flex items-center gap-2 rounded-md px-2 py-2 transition-colors"
-            :style="{ paddingLeft: `${node.depth * 24 + 8}px` }"
-          >
-            <button
-              class="flex size-5 shrink-0 items-center justify-center rounded"
-              :class="node.hasChildren ? 'hover:bg-accent cursor-pointer' : 'invisible'"
-              :aria-label="expanded.has(node.dept.deptId) ? '收起' : '展开'"
-              @click="toggleExpand(node.dept.deptId)"
-            >
-              <ChevronDown v-if="expanded.has(node.dept.deptId)" class="size-4" />
-              <ChevronRight v-else class="size-4" />
-            </button>
-
-            <div class="flex min-w-0 flex-1 items-center gap-3">
-              <span class="truncate font-medium">{{ node.dept.deptName }}</span>
-              <span class="text-muted-foreground shrink-0 text-xs">{{ node.dept.deptCode }}</span>
-            </div>
-
-            <div class="flex shrink-0 items-center gap-2">
-              <Switch
-                size="sm"
-                :model-value="node.dept.status === 1"
-                :disabled="node.dept.builtIn === 1"
-                @update:model-value="(val: boolean) => handleToggleStatus(node.dept, val)"
-              />
-              <Button
-                variant="ghost"
-                size="sm"
-                class="text-primary"
-                :disabled="node.dept.builtIn === 1"
-                @click="openCreateChild(node.dept)"
-              >
-                <Plus class="size-4" />新增子部门
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                class="text-primary"
-                :disabled="node.dept.builtIn === 1"
-                @click="openEdit(node.dept)"
-              >
-                <Pencil class="size-4" />编辑
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                class="text-destructive"
-                :disabled="node.dept.builtIn === 1"
-                @click="handleDelete(node.dept.deptId)"
-              >
-                <Trash2 class="size-4" />删除
-              </Button>
-            </div>
-          </div>
-        </div>
+      <CardContent class="p-0">
+        <Table class="table-fixed">
+          <TableHeader>
+            <TableRow>
+              <TableHead>部门名称</TableHead>
+              <TableHead>部门编码</TableHead>
+              <TableHead>排序</TableHead>
+              <TableHead>状态</TableHead>
+              <TableHead class="w-72 text-center">操作</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow v-for="node in flatNodes" :key="node.dept.deptId">
+              <TableCell>
+                <div class="flex items-center" :style="{ paddingLeft: `${node.depth * 20}px` }">
+                  <button
+                    class="flex size-5 shrink-0 items-center justify-center rounded"
+                    :class="node.hasChildren ? 'hover:bg-accent cursor-pointer' : 'invisible'"
+                    :aria-label="expanded.has(node.dept.deptId) ? '收起' : '展开'"
+                    @click="toggleExpand(node.dept.deptId)"
+                  >
+                    <ChevronDown v-if="expanded.has(node.dept.deptId)" class="size-4" />
+                    <ChevronRight v-else class="size-4" />
+                  </button>
+                  <span class="truncate font-medium">{{ node.dept.deptName }}</span>
+                </div>
+              </TableCell>
+              <TableCell class="truncate">{{ node.dept.deptCode }}</TableCell>
+              <TableCell class="tabular-nums">{{ node.dept.sortOrder }}</TableCell>
+              <TableCell>
+                <Switch
+                  size="sm"
+                  :model-value="node.dept.status === 1"
+                  :disabled="node.dept.builtIn === 1"
+                  @update:model-value="(val: boolean) => handleToggleStatus(node.dept, val)"
+                />
+              </TableCell>
+              <TableCell class="text-center">
+                <div class="flex justify-center gap-1">
+                  <Button variant="ghost" size="sm" class="text-primary" :disabled="node.dept.builtIn === 1" @click="openCreateChild(node.dept)">
+                    <Plus class="size-4" />子部门
+                  </Button>
+                  <Button variant="ghost" size="sm" class="text-primary" :disabled="node.dept.builtIn === 1" @click="openEdit(node.dept)">
+                    <Pencil class="size-4" />编辑
+                  </Button>
+                  <Button variant="ghost" size="sm" class="text-destructive" :disabled="node.dept.builtIn === 1" @click="handleDelete(node.dept.deptId)">
+                    <Trash2 class="size-4" />删除
+                  </Button>
+                </div>
+              </TableCell>
+            </TableRow>
+            <TableEmpty v-if="flatNodes.length === 0" :colspan="5">暂无部门数据</TableEmpty>
+          </TableBody>
+        </Table>
       </CardContent>
     </Card>
 
@@ -248,9 +298,19 @@ onMounted(loadTree)
           <DialogDescription>{{ editingDept ? '修改部门信息' : '创建一个新的部门' }}</DialogDescription>
         </DialogHeader>
         <div class="grid gap-4 py-4">
-          <div v-if="!editingDept && parentDeptName" class="grid grid-cols-4 items-center gap-4">
+          <div class="grid grid-cols-4 items-center gap-4">
             <Label class="justify-end">上级部门</Label>
-            <span class="text-muted-foreground col-span-3 text-sm">{{ parentDeptName }}</span>
+            <Select :model-value="parentDeptId || '__root__'" @update:model-value="(v: any) => { parentDeptId = v === '__root__' ? null : String(v) }">
+              <SelectTrigger class="col-span-3 w-full">
+                <SelectValue placeholder="无（根部门）" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__root__">无（根部门）</SelectItem>
+                <SelectItem v-for="opt in parentOptions" :key="opt.id" :value="opt.id">
+                  {{ '　'.repeat(opt.depth) }}{{ opt.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div class="grid grid-cols-4 items-center gap-x-4 gap-y-1">
             <Label class="justify-end">部门名称</Label>

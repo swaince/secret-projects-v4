@@ -1,5 +1,6 @@
 package com.dfec.soft.secret.system.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -35,7 +36,7 @@ public class SysDept {
     /**
      * 父部门ID。
      */
-    @TableField("parent_id")
+    @TableField(value = "parent_id", updateStrategy = FieldStrategy.ALWAYS)
     private String parentId;
 
     /**
