@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineOptions({ name: 'DictIndex' })
+defineOptions({ name: 'PostIndex' })
 
 import { ref, computed, onMounted } from 'vue'
 import {
@@ -11,10 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import {
-  Card,
-  CardContent,
-} from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -54,30 +51,35 @@ import {
 } from '@/components/ui/pagination'
 import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
-import { Search, RotateCcw, Plus, Trash2, Pencil, Eye, Check, Minus, X } from '@lucide/vue'
-import type { DictDTO, DictPageParams, PageResponse } from '@/api/dict'
-import { fetchDicts, createDict, updateDict, deleteDict, deleteDicts } from '@/api/dict'
-import DictItemDrawer from '@/components/system/DictItemDrawer.vue'
+import { Search, RotateCcw, Plus, Trash2, Pencil, Check, Minus, X } from '@lucide/vue'
+import type { PostDTO, PostPageParams } from '@/api/post'
+import type { PageResponse } from '@/api/dict'
+import { fetchPosts, createPost, updatePost, deletePost, deletePosts } from '@/api/post'
 
-const dicts = ref<DictDTO[]>([])
+const posts = ref<PostDTO[]>([])
 const total = ref(0)
 const page = ref(1)
 const size = ref(10)
 const searchName = ref('')
-const searchType = ref('')
+const searchCode = ref('')
+const searchLevel = ref('')
 const selected = ref<string[]>([])
-const drawerOpen = ref(false)
-const currentDict = ref<DictDTO | null>(null)
 const dialogOpen = ref(false)
-const editingDict = ref<DictDTO | null>(null)
-const defaultDictForm = () => ({ dictName: '', dictCode: '', dataValueType: 'STRING', remark: '' })
-const formData = ref(defaultDictForm())
+const editingPost = ref<PostDTO | null>(null)
+const defaultPostForm = () => ({ postName: '', postCode: '', postLevel: '1', sortOrder: 0, remark: '' })
+const formData = ref(defaultPostForm())
 const jumpPage = ref<number | undefined>()
 const totalPages = computed(() => Math.ceil(total.value / size.value) || 1)
 const formErrors = ref<Record<string, string>>({})
 const confirmOpen = ref(false)
 const confirmMessage = ref('')
 const confirmAction = ref<(() => Promise<void>) | null>(null)
+
+const levelLabels: Record<number, string> = { 1: '操作员', 2: '审核员' }
+
+function levelText(level: number): string {
+  return levelLabels[level] ?? String(level)
+}
 
 function openConfirm(message: string, action: () => Promise<void>) {
   confirmMessage.value = message
@@ -90,24 +92,25 @@ async function executeConfirm() {
   confirmOpen.value = false
 }
 
-async function loadDicts() {
-  const params: DictPageParams = { page: page.value, size: size.value }
-  if (searchName.value) params.dictName = searchName.value
-  if (searchType.value) params.dataValueType = searchType.value
-  const res: PageResponse<DictDTO> = await fetchDicts(params)
-  dicts.value = res.records
+async function loadPosts() {
+  const params: PostPageParams = { page: page.value, size: size.value }
+  if (searchName.value) params.postName = searchName.value
+  if (searchCode.value) params.postCode = searchCode.value
+  if (searchLevel.value) params.postLevel = Number(searchLevel.value)
+  const res: PageResponse<PostDTO> = await fetchPosts(params)
+  posts.value = res.records
   total.value = res.total
 }
 
 function handleSearch() {
   page.value = 1
-  loadDicts()
+  loadPosts()
 }
 
 function handleSizeChange(val: unknown) {
   size.value = Number(val)
   page.value = 1
-  loadDicts()
+  loadPosts()
 }
 
 function handleJump() {
@@ -115,27 +118,22 @@ function handleJump() {
   const p = Math.max(1, Math.min(jumpPage.value, totalPages.value))
   page.value = p
   jumpPage.value = undefined
-  loadDicts()
+  loadPosts()
 }
 
-function handleRowClick(dict: DictDTO) {
-  currentDict.value = dict
-  drawerOpen.value = true
-}
-
-function handleDelete(dictId: string) {
-  openConfirm('确定要删除该字典及其所有字典项吗？', async () => {
-    await deleteDict(dictId)
-    await loadDicts()
+function handleDelete(postId: string) {
+  openConfirm('确定要删除该岗位吗？', async () => {
+    await deletePost(postId)
+    await loadPosts()
   })
 }
 
 function handleBatchDelete() {
   if (selected.value.length === 0) return
-  openConfirm(`确定要删除选中的 ${selected.value.length} 个字典吗？`, async () => {
-    await deleteDicts(selected.value)
+  openConfirm(`确定要删除选中的 ${selected.value.length} 个岗位吗？`, async () => {
+    await deletePosts(selected.value)
     selected.value = []
-    await loadDicts()
+    await loadPosts()
   })
 }
 
@@ -147,89 +145,103 @@ function toggleSelect(id: string, checked: boolean) {
   }
 }
 
+const selectablePosts = computed(() => posts.value.filter((p) => p.builtIn !== 1))
+
 const headerChecked = computed(() => {
-  if (dicts.value.length === 0) return false
-  if (selected.value.length === dicts.value.length) return true
-  if (selected.value.length > 0) return 'indeterminate' as const
+  if (selectablePosts.value.length === 0) return false
+  const selectedSet = new Set(selected.value)
+  const allSelected = selectablePosts.value.every((p) => selectedSet.has(p.postId))
+  if (allSelected) return true
+  if (selectablePosts.value.some((p) => selectedSet.has(p.postId))) return 'indeterminate' as const
   return false
 })
 
 function toggleSelectAll() {
-  if (selected.value.length === dicts.value.length) {
-    selected.value = []
+  const ids = selectablePosts.value.map((p) => p.postId)
+  if (ids.every((id) => selected.value.includes(id))) {
+    selected.value = selected.value.filter((id) => !ids.includes(id))
   } else {
-    selected.value = dicts.value.map((d) => d.dictId)
+    selected.value = [...new Set([...selected.value, ...ids])]
   }
 }
 
-async function handleToggleStatus(dict: DictDTO, enabled: boolean) {
-  await updateDict(dict.dictId, { ...dict, status: enabled ? 1 : 0 })
-  await loadDicts()
+async function handleToggleStatus(post: PostDTO, enabled: boolean) {
+  await updatePost(post.postId, { ...post, status: enabled ? 1 : 0 })
+  await loadPosts()
 }
 
 function openCreate() {
-  editingDict.value = null
-  formData.value = defaultDictForm()
+  editingPost.value = null
+  formData.value = { ...defaultPostForm(), sortOrder: total.value + 1 }
   formErrors.value = {}
   dialogOpen.value = true
 }
 
-function openEdit(dict: DictDTO) {
-  editingDict.value = dict
+function openEdit(post: PostDTO) {
+  editingPost.value = post
   formData.value = {
-    dictName: dict.dictName,
-    dictCode: dict.dictCode,
-    dataValueType: dict.dataValueType || 'STRING',
-    remark: dict.remark || '',
+    postName: post.postName,
+    postCode: post.postCode,
+    postLevel: String(post.postLevel),
+    sortOrder: post.sortOrder,
+    remark: post.remark || '',
   }
   formErrors.value = {}
   dialogOpen.value = true
 }
 
-function validateDictForm(): boolean {
+function validatePostForm(): boolean {
   const errors: Record<string, string> = {}
-  if (!formData.value.dictName.trim()) errors.dictName = '字典名称不能为空'
-  if (!formData.value.dictCode.trim()) errors.dictCode = '字典编码不能为空'
+  if (!formData.value.postName.trim()) errors.postName = '岗位名称不能为空'
+  if (!formData.value.postCode.trim()) errors.postCode = '岗位编码不能为空'
   formErrors.value = errors
   return Object.keys(errors).length === 0
 }
 
 async function handleSave() {
-  if (!validateDictForm()) return
-  if (editingDict.value) {
-    await updateDict(editingDict.value.dictId, formData.value)
+  if (!validatePostForm()) return
+  const payload = {
+    postName: formData.value.postName,
+    postCode: formData.value.postCode,
+    postLevel: Number(formData.value.postLevel),
+    sortOrder: formData.value.sortOrder,
+    remark: formData.value.remark,
+  }
+  if (editingPost.value) {
+    await updatePost(editingPost.value.postId, payload)
   } else {
-    await createDict(formData.value)
+    await createPost(payload)
   }
   dialogOpen.value = false
-  await loadDicts()
+  await loadPosts()
 }
 
-onMounted(loadDicts)
+onMounted(loadPosts)
 </script>
 
 <template>
   <div class="space-y-4">
     <Card>
       <CardContent class="py-4">
-        <div class="flex items-end gap-4">
+          <div class="flex items-end gap-4">
           <div class="flex items-center gap-2">
-            <Label class="shrink-0">字典名称</Label>
-            <Input v-model="searchName" name="dictName" autocomplete="off" placeholder="请输入字典名称…" class="w-48" />
+            <Label class="shrink-0">岗位名称</Label>
+            <Input v-model="searchName" name="postName" autocomplete="off" placeholder="请输入岗位名称…" class="w-48" />
           </div>
           <div class="flex items-center gap-2">
-            <Label class="shrink-0">数据类型</Label>
-            <Select :model-value="searchType || '__all__'" @update:model-value="(v: any) => { searchType = v === '__all__' ? '' : String(v) }">
+            <Label class="shrink-0">岗位编码</Label>
+            <Input v-model="searchCode" name="postCode" autocomplete="off" placeholder="请输入岗位编码…" class="w-48" />
+          </div>
+          <div class="flex items-center gap-2">
+            <Label class="shrink-0">岗位级别</Label>
+            <Select :model-value="searchLevel || '__all__'" @update:model-value="(v: any) => { searchLevel = v === '__all__' ? '' : String(v) }">
               <SelectTrigger class="w-48">
                 <SelectValue placeholder="全部" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="__all__">全部</SelectItem>
-                <SelectItem value="STRING">STRING</SelectItem>
-                <SelectItem value="NUMBER">NUMBER</SelectItem>
-                <SelectItem value="BOOLEAN">BOOLEAN</SelectItem>
-                <SelectItem value="OBJECT">OBJECT</SelectItem>
-                <SelectItem value="ARRAY">ARRAY</SelectItem>
+                <SelectItem value="1">操作员</SelectItem>
+                <SelectItem value="2">审核员</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -237,7 +249,7 @@ onMounted(loadDicts)
             <Button size="sm" data-testid="search-btn" @click="handleSearch">
               <Search class="size-4" />搜索
             </Button>
-            <Button size="sm" variant="outline" @click="searchName = ''; searchType = ''; handleSearch()">
+            <Button size="sm" variant="outline" @click="searchName = ''; searchCode = ''; searchLevel = ''; handleSearch()">
               <RotateCcw class="size-4" />重置
             </Button>
           </div>
@@ -247,7 +259,7 @@ onMounted(loadDicts)
 
     <div class="flex items-center gap-2">
       <Button size="sm" @click="openCreate">
-        <Plus class="size-4" />新增字典
+        <Plus class="size-4" />新增岗位
       </Button>
       <Button
         v-if="selected.length > 0"
@@ -276,62 +288,56 @@ onMounted(loadDicts)
                   </template>
                 </Checkbox>
               </TableHead>
-              <TableHead>字典名称</TableHead>
-              <TableHead>字典编码</TableHead>
-              <TableHead>数据类型</TableHead>
+              <TableHead>岗位名称</TableHead>
+              <TableHead>岗位编码</TableHead>
+              <TableHead>岗位级别</TableHead>
+              <TableHead>排序</TableHead>
               <TableHead>状态</TableHead>
               <TableHead>内置</TableHead>
               <TableHead class="text-center">创建时间</TableHead>
               <TableHead>备注</TableHead>
-              <TableHead class="w-72 text-center">操作</TableHead>
+              <TableHead class="w-52 text-center">操作</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow
-              v-for="dict in dicts"
-              :key="dict.dictId"
-              class="cursor-pointer"
-              @click="handleRowClick(dict)"
-            >
-              <TableCell @click.stop>
+            <TableRow v-for="post in posts" :key="post.postId">
+              <TableCell>
                 <Checkbox
-                  :model-value="selected.includes(dict.dictId)"
-                  :disabled="dict.builtIn === 1"
-                  @update:model-value="toggleSelect(dict.dictId, !!$event)"
+                  :model-value="selected.includes(post.postId)"
+                  :disabled="post.builtIn === 1"
+                  @update:model-value="toggleSelect(post.postId, !!$event)"
                 />
               </TableCell>
-              <TableCell class="truncate">{{ dict.dictName }}</TableCell>
-              <TableCell class="truncate">{{ dict.dictCode }}</TableCell>
-              <TableCell>{{ dict.dataValueType }}</TableCell>
-              <TableCell @click.stop>
+              <TableCell class="truncate">{{ post.postName }}</TableCell>
+              <TableCell class="truncate">{{ post.postCode }}</TableCell>
+              <TableCell>{{ levelText(post.postLevel) }}</TableCell>
+              <TableCell class="tabular-nums">{{ post.sortOrder }}</TableCell>
+              <TableCell>
                 <Switch
                   size="sm"
-                  :model-value="dict.status === 1"
-                  :disabled="dict.builtIn === 1"
-                  @update:model-value="(val: boolean) => handleToggleStatus(dict, val)"
+                  :model-value="post.status === 1"
+                  :disabled="post.builtIn === 1"
+                  @update:model-value="(val: boolean) => handleToggleStatus(post, val)"
                 />
               </TableCell>
               <TableCell>
-                <Badge v-if="dict.builtIn === 1" variant="secondary">是</Badge>
+                <Badge v-if="post.builtIn === 1" variant="secondary">是</Badge>
                 <Badge v-else variant="outline">否</Badge>
               </TableCell>
-              <TableCell class="tabular-nums text-center">{{ dict.createdAt }}</TableCell>
-              <TableCell class="truncate">{{ dict.remark }}</TableCell>
-              <TableCell class="text-center" @click.stop>
+              <TableCell class="tabular-nums text-center">{{ post.createdAt }}</TableCell>
+              <TableCell class="truncate">{{ post.remark }}</TableCell>
+              <TableCell class="text-center">
                 <div class="flex justify-center gap-1">
-                  <Button variant="ghost" size="sm" class="text-primary" :disabled="dict.builtIn === 1" @click="openEdit(dict)">
+                  <Button variant="ghost" size="sm" class="text-primary" :disabled="post.builtIn === 1" @click="openEdit(post)">
                     <Pencil class="size-4" />编辑
                   </Button>
-                  <Button variant="ghost" size="sm" class="text-amber-500" @click="handleRowClick(dict)">
-                    <Eye class="size-4" />详情
-                  </Button>
-                  <Button variant="ghost" size="sm" class="text-destructive" :disabled="dict.builtIn === 1" @click="handleDelete(dict.dictId)">
+                  <Button variant="ghost" size="sm" class="text-destructive" :disabled="post.builtIn === 1" @click="handleDelete(post.postId)">
                     <Trash2 class="size-4" />删除
                   </Button>
                 </div>
               </TableCell>
             </TableRow>
-            <TableEmpty v-if="dicts.length === 0" :colspan="9">暂无数据</TableEmpty>
+            <TableEmpty v-if="posts.length === 0" :colspan="10">暂无数据</TableEmpty>
           </TableBody>
         </Table>
 
@@ -341,7 +347,7 @@ onMounted(loadDicts)
             :total="total"
             :items-per-page="size"
             class="mx-0 w-auto justify-end"
-            @update:page="loadDicts"
+            @update:page="loadPosts"
           >
             <PaginationContent v-slot="{ items }">
               <PaginationPrevious />
@@ -391,53 +397,52 @@ onMounted(loadDicts)
       </CardContent>
     </Card>
 
-    <DictItemDrawer v-model:open="drawerOpen" :dict="currentDict" />
-
     <Dialog v-model:open="dialogOpen">
       <DialogContent class="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{{ editingDict ? '编辑字典' : '新增字典' }}</DialogTitle>
-          <DialogDescription>{{ editingDict ? '修改字典信息' : '创建一个新的字典' }}</DialogDescription>
+          <DialogTitle>{{ editingPost ? '编辑岗位' : '新增岗位' }}</DialogTitle>
+          <DialogDescription>{{ editingPost ? '修改岗位信息' : '创建一个新的岗位' }}</DialogDescription>
         </DialogHeader>
         <div class="grid gap-4 py-4">
           <div class="grid grid-cols-4 items-center gap-x-4 gap-y-1">
-            <Label class="justify-end">字典名称</Label>
-            <Input v-model="formData.dictName" name="dictName" autocomplete="off" placeholder="请输入字典名称…" class="col-span-3" :aria-invalid="!!formErrors.dictName" />
-            <template v-if="formErrors.dictName">
+            <Label class="justify-end">岗位名称</Label>
+            <Input v-model="formData.postName" name="postName" autocomplete="off" placeholder="请输入岗位名称…" class="col-span-3" :aria-invalid="!!formErrors.postName" />
+            <template v-if="formErrors.postName">
               <span />
-              <p class="col-span-3 text-destructive text-xs">{{ formErrors.dictName }}</p>
+              <p class="col-span-3 text-destructive text-xs">{{ formErrors.postName }}</p>
             </template>
           </div>
           <div class="grid grid-cols-4 items-center gap-x-4 gap-y-1">
-            <Label class="justify-end">字典编码</Label>
+            <Label class="justify-end">岗位编码</Label>
             <Input
-              v-model="formData.dictCode"
-              name="dictCode"
+              v-model="formData.postCode"
+              name="postCode"
               autocomplete="off"
-              placeholder="请输入字典编码…"
+              placeholder="请输入岗位编码…"
               class="col-span-3"
-              :disabled="!!editingDict"
-              :aria-invalid="!!formErrors.dictCode"
+              :disabled="!!editingPost"
+              :aria-invalid="!!formErrors.postCode"
             />
-            <template v-if="formErrors.dictCode">
+            <template v-if="formErrors.postCode">
               <span />
-              <p class="col-span-3 text-destructive text-xs">{{ formErrors.dictCode }}</p>
+              <p class="col-span-3 text-destructive text-xs">{{ formErrors.postCode }}</p>
             </template>
           </div>
           <div class="grid grid-cols-4 items-center gap-4">
-            <Label class="justify-end">数据类型</Label>
-            <Select v-model="formData.dataValueType">
+            <Label class="justify-end">岗位级别</Label>
+            <Select v-model="formData.postLevel">
               <SelectTrigger class="col-span-3 w-full">
-                <SelectValue placeholder="选择数据类型" />
+                <SelectValue placeholder="选择岗位级别" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="STRING">STRING</SelectItem>
-                <SelectItem value="NUMBER">NUMBER</SelectItem>
-                <SelectItem value="BOOLEAN">BOOLEAN</SelectItem>
-                <SelectItem value="OBJECT">OBJECT</SelectItem>
-                <SelectItem value="ARRAY">ARRAY</SelectItem>
+                <SelectItem value="1">操作员</SelectItem>
+                <SelectItem value="2">审核员</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+          <div class="grid grid-cols-4 items-center gap-4">
+            <Label class="justify-end">排序</Label>
+            <Input v-model.number="formData.sortOrder" type="number" name="sortOrder" autocomplete="off" placeholder="排序号" class="col-span-3" />
           </div>
           <div class="grid grid-cols-4 items-center gap-4">
             <Label class="justify-end">备注</Label>

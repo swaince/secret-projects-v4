@@ -11,11 +11,11 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
-  jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: Asia/Shanghai
   data:
     redis:
       host: 192.168.2.160
       port: 6379
       password: 12345678
+logging:
+  level:
+    com.dfec.soft.secret.system.mapper: debug

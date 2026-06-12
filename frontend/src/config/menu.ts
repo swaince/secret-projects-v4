@@ -41,8 +41,14 @@ export const menuConfig: MenuItem[] = [
         id: 'org-mgmt', title: '组织架构', icon: 'Building2',
         children: [
           { id: 'dept-list', title: '部门管理', icon: 'Building', path: '/system/depts' },
-          { id: 'post-list', title: '岗位管理', icon: 'BriefcaseBusiness', path: '/system/posts' },
         ],
+      },
+      {
+        id: 'post-list',
+        title: '岗位管理',
+        icon: 'BriefcaseBusiness',
+        path: '/system/posts',
+        component: () => import('@/views/system/PostView.vue'),
       },
       { id: 'menu-config', title: '菜单配置', icon: 'Menu', path: '/system/menus' },
       {

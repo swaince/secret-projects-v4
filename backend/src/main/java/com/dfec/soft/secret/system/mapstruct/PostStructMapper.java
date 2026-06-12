@@ -1,20 +1,20 @@
 package com.dfec.soft.secret.system.mapstruct;
 
-import com.dfec.soft.secret.system.dto.common.DictDTO;
-import com.dfec.soft.secret.system.entity.SysDict;
+import com.dfec.soft.secret.system.dto.common.PostDTO;
+import com.dfec.soft.secret.system.entity.SysPost;
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 /**
- * 字典 MapStruct 映射器。
+ * 岗位 MapStruct 映射器。
  *
  * @author zhangth
  * @since 1.0.0
  */
 @Mapper(componentModel = "spring")
-public interface DictStructMapper {
+public interface PostStructMapper {
 
     /**
      * entity → dto。
@@ -22,7 +22,7 @@ public interface DictStructMapper {
      * @param entity 实体
      * @return DTO
      */
-    DictDTO entityToDTO(SysDict entity);
+    PostDTO entityToDTO(SysPost entity);
 
     /**
      * entity list → dto list。
@@ -30,7 +30,7 @@ public interface DictStructMapper {
      * @param list 实体列表
      * @return DTO 列表
      */
-    List<DictDTO> entityToDTO(List<SysDict> list);
+    List<PostDTO> entityToDTO(List<SysPost> list);
 
     /**
      * dto → entity。
@@ -38,7 +38,7 @@ public interface DictStructMapper {
      * @param request DTO 请求
      * @return 实体
      */
-    SysDict requestToEntity(DictDTO request);
+    SysPost requestToEntity(PostDTO request);
 
     /**
      * 更新实体。
@@ -46,11 +46,11 @@ public interface DictStructMapper {
      * @param entity  实体
      * @param request DTO 请求
      */
-    @Mapping(target = "dictId", ignore = true)
+    @Mapping(target = "postId", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "builtIn", ignore = true)
     @Mapping(target = "deleted", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
-    void updateEntity(@MappingTarget SysDict entity, DictDTO request);
+    void updateEntity(@MappingTarget SysPost entity, PostDTO request);
 }
