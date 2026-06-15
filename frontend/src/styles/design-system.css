@@ -166,6 +166,15 @@
   --tracking-wide: calc(var(--tracking-normal) + 0.025em);
   --tracking-wider: calc(var(--tracking-normal) + 0.05em);
   --tracking-widest: calc(var(--tracking-normal) + 0.1em);
+
+  --color-method-get: #dcfce7;
+  --color-method-post: #dbeafe;
+  --color-method-put: #ffedd5;
+  --color-method-delete: #fee2e2;
+  --color-status-2xx: #dcfce7;
+  --color-status-3xx: #dbeafe;
+  --color-status-4xx: #ffedd5;
+  --color-status-5xx: #fee2e2;
 }
 
 @layer base {

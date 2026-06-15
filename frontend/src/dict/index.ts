@@ -8,6 +8,7 @@ export const dict = createDictAccessor({
   postLevel: { code: 'post_level', valueType: 'NUMBER' },
   gender: { code: 'gender', valueType: 'STRING' },
   menuType: { code: 'menu_type', valueType: 'STRING' },
+  requestMethod: { code: 'request_method', valueType: 'STRING' },
 })
 
 export type { DictItem, DictAccessor, DataValueType } from './types'

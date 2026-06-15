@@ -1,5 +1,6 @@
 package com.dfec.soft.secret.common.config;
 
+import com.dfec.soft.secret.common.interceptor.OperationLogInterceptor;
 import com.dfec.soft.secret.common.resolver.TokenArgumentResolver;
 import com.dfec.soft.secret.common.resolver.UuidTokenResolver;
 import java.nio.charset.StandardCharsets;
@@ -9,6 +10,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
@@ -30,6 +32,17 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 jacksonConverter.setDefaultCharset(StandardCharsets.UTF_8);
             }
         }
+    }
+
+    private final OperationLogInterceptor operationLogInterceptor;
+
+    public WebMvcConfig(OperationLogInterceptor operationLogInterceptor) {
+        this.operationLogInterceptor = operationLogInterceptor;
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(operationLogInterceptor).addPathPatterns("/**");
     }
 
     @Override
