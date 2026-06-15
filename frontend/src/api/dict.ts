@@ -84,5 +84,5 @@ export function deleteDictItems(dictId: string, ids: string[]): Promise<string[]
 }
 
 export function fetchDictByCode(dictCode: string): Promise<DictWithItemsDTO | null> {
-  return http.get<DictWithItemsDTO | null>('/dicts/items/by-code', { dictCode })
+  return http.get<DictWithItemsDTO | null>('/dicts/items/by-code', { dictCode }, { silent: true })
 }
