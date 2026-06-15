@@ -6,6 +6,7 @@ export const dict = createDictAccessor({
   builtIn: { code: 'built_in', valueType: 'NUMBER' },
   deleted: { code: 'deleted', valueType: 'NUMBER' },
   postLevel: { code: 'post_level', valueType: 'NUMBER' },
+  gender: { code: 'gender', valueType: 'STRING' },
 })
 
 export type { DictItem, DictAccessor, DataValueType } from './types'

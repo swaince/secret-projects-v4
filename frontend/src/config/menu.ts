@@ -30,11 +30,11 @@ export const menuConfig: MenuItem[] = [
     id: 'system', title: '系统管理', icon: 'Settings',
     children: [
       {
-        id: 'user-mgmt', title: '用户管理', icon: 'Users',
-        children: [
-          { id: 'user-list', title: '用户列表', icon: 'UserRound', path: '/system/users' },
-          { id: 'perm-list', title: '权限配置', icon: 'LockKeyhole', path: '/system/permissions' },
-        ],
+        id: 'user-list',
+        title: '用户管理',
+        icon: 'Users',
+        path: '/system/users',
+        component: () => import('@/views/system/UserView.vue'),
       },
       {
         id: 'role-list',
