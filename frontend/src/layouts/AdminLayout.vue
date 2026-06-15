@@ -5,12 +5,12 @@ import AppSidebar from '@/components/layout/AppSidebar.vue'
 import AppBreadcrumb from '@/components/layout/AppBreadcrumb.vue'
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 
-const { activePrimaryId, sidebarMenu, menuConfig, navigate } = useMenuNavigation()
+const { activePrimaryId, sidebarMenu, menuItems, navigate } = useMenuNavigation()
 </script>
 
 <template>
   <div class="flex h-dvh flex-col">
-    <AppHeader :menu-items="menuConfig" :active-primary-id="activePrimaryId" @navigate="navigate" />
+    <AppHeader :menu-items="menuItems" :active-primary-id="activePrimaryId" @navigate="navigate" />
     <div class="flex min-h-0 flex-1">
       <SidebarProvider :default-open="true" class="min-h-0">
         <AppSidebar v-if="sidebarMenu.length" :menu-items="sidebarMenu" />

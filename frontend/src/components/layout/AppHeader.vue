@@ -7,7 +7,7 @@ import { Separator } from '@/components/ui/separator'
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import type { MenuItem } from '@/config/menu'
+import type { MenuItem } from '@/stores/menu'
 
 defineProps<{ menuItems: MenuItem[]; activePrimaryId: string }>()
 const emit = defineEmits<{ (e: 'navigate', item: MenuItem): void }>()

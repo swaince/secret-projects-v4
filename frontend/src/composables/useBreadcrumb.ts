@@ -1,12 +1,16 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import type { MenuItem } from '@/config/menu'
-import { menuConfig } from '@/config/menu'
+import { useMenuStore } from '@/stores/menu'
+import type { MenuItem } from '@/stores/menu'
 
-export interface BreadcrumbItem { title: string; path?: string }
+export interface BreadcrumbItem {
+  title: string
+  path?: string
+}
 
 export function useBreadcrumb() {
   const route = useRoute()
+  const menuStore = useMenuStore()
 
   function getAncestors(path: string): MenuItem[] {
     function search(items: MenuItem[], ancestors: MenuItem[]): MenuItem[] | null {
@@ -20,15 +24,15 @@ export function useBreadcrumb() {
       }
       return null
     }
-    return search(menuConfig, []) || []
+    return search(menuStore.menuItems, []) || []
   }
 
   const breadcrumbs = computed<BreadcrumbItem[]>(() => {
     const ancestors = getAncestors(route.path)
     if (!ancestors.length) {
       return route.matched
-        .map(m => ({ title: (m.meta?.title as string) || '', path: m.path }))
-        .filter(b => b.title)
+        .map((m) => ({ title: (m.meta?.title as string) || '', path: m.path }))
+        .filter((b) => b.title)
     }
     return ancestors.map((item, i) => ({
       title: item.title,

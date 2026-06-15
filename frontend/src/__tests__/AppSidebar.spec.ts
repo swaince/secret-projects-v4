@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createRouter, createWebHistory } from 'vue-router'
 import { ref, computed } from 'vue'
-import type { MenuItem } from '@/config/menu'
+import type { MenuItem } from '@/stores/menu'
 import AppSidebar from '@/components/layout/AppSidebar.vue'
 
 vi.mock('@/components/ui/sidebar/utils', async (importOriginal) => {

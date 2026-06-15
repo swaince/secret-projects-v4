@@ -15,7 +15,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import type { MenuItem } from '@/config/menu'
+import type { MenuItem } from '@/stores/menu'
 
 defineProps<{ menuItems: MenuItem[] }>()
 const router = useRouter()

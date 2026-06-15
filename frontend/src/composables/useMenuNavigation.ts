@@ -1,27 +1,28 @@
 import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { MenuItem } from '@/config/menu'
-import { menuConfig } from '@/config/menu'
+import { useMenuStore } from '@/stores/menu'
+import type { MenuItem } from '@/stores/menu'
 
 export function useMenuNavigation() {
   const route = useRoute()
   const router = useRouter()
+  const menuStore = useMenuStore()
   const activePrimaryId = ref('')
 
   function findDescendant(item: MenuItem, p: string): boolean {
     if (item.path === p) return true
-    return item.children?.some(c => findDescendant(c, p)) ?? false
+    return item.children?.some((c) => findDescendant(c, p)) ?? false
   }
 
   function findPrimary(path: string): string {
-    for (const item of menuConfig) {
+    for (const item of menuStore.menuItems) {
       if (item.path === path || findDescendant(item, path)) return item.id
     }
     return ''
   }
 
-  const sidebarMenu = computed<MenuItem[]>(() =>
-    menuConfig.find(i => i.id === activePrimaryId.value)?.children || [],
+  const sidebarMenu = computed<MenuItem[]>(
+    () => menuStore.menuItems.find((i) => i.id === activePrimaryId.value)?.children || [],
   )
 
   function firstPath(item: MenuItem): string | undefined {
@@ -38,7 +39,13 @@ export function useMenuNavigation() {
     if (p) router.push(p)
   }
 
-  watch(() => route.path, p => { activePrimaryId.value = findPrimary(p) }, { immediate: true })
+  watch(
+    () => route.path,
+    (p) => {
+      activePrimaryId.value = findPrimary(p)
+    },
+    { immediate: true },
+  )
 
-  return { activePrimaryId, sidebarMenu, menuConfig, navigate }
+  return { activePrimaryId, sidebarMenu, menuItems: computed(() => menuStore.menuItems), navigate }
 }

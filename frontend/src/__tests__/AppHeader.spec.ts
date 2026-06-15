@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createRouter, createWebHistory } from 'vue-router'
 import { createPinia, setActivePinia } from 'pinia'
-import type { MenuItem } from '@/config/menu'
+import type { MenuItem } from '@/stores/menu'
 import AppHeader from '@/components/layout/AppHeader.vue'
 
 const items: MenuItem[] = [

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import type { MenuItem } from '@/config/menu'
+import type { MenuItem } from '@/stores/menu'
 
 function createRoutesFromMenu(items: MenuItem[]) {
   const routes: { path: string; name: string; meta: Record<string, unknown> }[] = []

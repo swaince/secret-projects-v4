@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import type { MenuItem } from '@/config/menu'
+import type { MenuItem } from '@/stores/menu'
 
 function findActivePrimaryId(path: string, menuConfig: MenuItem[]): string {
   function findDescendant(item: MenuItem, p: string): boolean {
