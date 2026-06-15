@@ -5,7 +5,9 @@ import com.dfec.soft.secret.common.constants.BizCode;
 import com.dfec.soft.secret.common.constants.Builtin;
 import com.dfec.soft.secret.common.constants.Deleted;
 import com.dfec.soft.secret.common.exception.OuterException;
+import com.dfec.soft.secret.common.constants.Status;
 import com.dfec.soft.secret.system.dto.common.DictItemDTO;
+import com.dfec.soft.secret.system.dto.common.DictWithItemsDTO;
 import com.dfec.soft.secret.system.entity.SysDict;
 import com.dfec.soft.secret.system.entity.SysDictItem;
 import com.dfec.soft.secret.system.mapstruct.DictItemStructMapper;
@@ -59,6 +61,7 @@ public class DictItemServiceImpl implements DictItemService {
         LambdaQueryWrapper<SysDictItem> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysDictItem::getDictId, dictId)
                 .eq(SysDictItem::getDeleted, Deleted.NO.getValue())
+                .eq(SysDictItem::getStatus, Status.ENABLED.getValue())
                 .orderByAsc(SysDictItem::getSortOrder);
         List<SysDictItem> list = dictItemMapper.selectList(wrapper);
         return dictItemStructMapper.entityToDTO(list);
@@ -192,6 +195,25 @@ public class DictItemServiceImpl implements DictItemService {
             return Collections.emptyList();
         }
         return deleteByDictId(dict.getDictId());
+    }
+
+    @Override
+    public DictWithItemsDTO getWithItemsByCode(String dictCode) {
+        LambdaQueryWrapper<SysDict> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SysDict::getDictCode, dictCode)
+                .eq(SysDict::getDeleted, Deleted.NO.getValue())
+                .eq(SysDict::getStatus, Status.ENABLED.getValue());
+        SysDict dict = dictMapper.selectOne(wrapper);
+        if (dict == null) {
+            return null;
+        }
+        DictWithItemsDTO dto = new DictWithItemsDTO();
+        dto.setDictId(dict.getDictId());
+        dto.setDictName(dict.getDictName());
+        dto.setDictCode(dict.getDictCode());
+        dto.setDataValueType(dict.getDataValueType());
+        dto.setItems(listByDictId(dict.getDictId()));
+        return dto;
     }
 
     private SysDictItem selectByIdNotDeleted(String itemId) {

@@ -3,12 +3,14 @@ package com.dfec.soft.secret.system.controller;
 import com.dfec.soft.secret.common.validation.group.Create;
 import com.dfec.soft.secret.common.validation.group.Update;
 import com.dfec.soft.secret.system.dto.common.DictDTO;
+import com.dfec.soft.secret.system.dto.common.DictWithItemsDTO;
 import com.dfec.soft.secret.common.dto.common.PageResponse;
 import com.dfec.soft.secret.common.dto.common.R;
 import com.dfec.soft.secret.system.dto.request.DictPageRequest;
 import com.dfec.soft.secret.system.service.DictItemService;
 import com.dfec.soft.secret.system.service.DictService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 import org.springframework.validation.annotation.Validated;
@@ -101,6 +103,17 @@ public class DictController {
     public R<List<String>> delete(@NotEmpty @RequestBody List<String> dictIds,
             @TokenParam("userId") String userId) {
         return R.ok(dictService.delete(dictIds, userId));
+    }
+
+    /**
+     * 根据字典编码查询字典及其字典项。
+     *
+     * @param dictCode 字典编码
+     * @return 字典及字典项
+     */
+    @GetMapping("/items/by-code")
+    public R<DictWithItemsDTO> getItemsByDictCode(@RequestParam @NotBlank String dictCode) {
+        return R.ok(dictItemService.getWithItemsByCode(dictCode));
     }
 
     /**

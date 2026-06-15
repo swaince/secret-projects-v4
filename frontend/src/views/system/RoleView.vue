@@ -54,6 +54,7 @@ import { Badge } from '@/components/ui/badge'
 import { Search, RotateCcw, Plus, Trash2, Pencil, Check, Minus, X } from '@lucide/vue'
 import type { RoleDTO, RolePageParams } from '@/api/role'
 import { fetchRoles, createRole, updateRole, deleteRole, deleteRoles } from '@/api/role'
+import { dict } from '@/dict'
 
 const roles = ref<RoleDTO[]>([])
 const total = ref(0)
@@ -295,8 +296,7 @@ onMounted(loadRoles)
                 />
               </TableCell>
               <TableCell>
-                <Badge v-if="role.builtIn === 1" variant="secondary">是</Badge>
-                <Badge v-else variant="outline">否</Badge>
+                {{ dict.builtIn.getLabel(String(role.builtIn)) }}
               </TableCell>
               <TableCell class="tabular-nums text-center">{{ role.createdAt }}</TableCell>
               <TableCell class="truncate">{{ role.remark }}</TableCell>

@@ -50,10 +50,11 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination'
 import { Switch } from '@/components/ui/switch'
-import { Badge } from '@/components/ui/badge'
+
 import { Search, RotateCcw, Plus, Trash2, Pencil, Check, Minus, X } from '@lucide/vue'
 import type { PostDTO, PostPageParams } from '@/api/post'
 import { fetchPosts, createPost, updatePost, deletePost, deletePosts } from '@/api/post'
+import { dict } from '@/dict'
 
 const posts = ref<PostDTO[]>([])
 const total = ref(0)
@@ -74,11 +75,6 @@ const confirmOpen = ref(false)
 const confirmMessage = ref('')
 const confirmAction = ref<(() => Promise<void>) | null>(null)
 
-const levelLabels: Record<number, string> = { 1: '操作员', 2: '审核员' }
-
-function levelText(level: number): string {
-  return levelLabels[level] ?? String(level)
-}
 
 function openConfirm(message: string, action: () => Promise<void>) {
   confirmMessage.value = message
@@ -239,8 +235,9 @@ onMounted(loadPosts)
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="__all__">全部</SelectItem>
-                <SelectItem value="1">操作员</SelectItem>
-                <SelectItem value="2">审核员</SelectItem>
+                <SelectItem v-for="item in dict.postLevel.items.value" :key="item.itemKey" :value="item.itemKey">
+                  {{ item.itemLabel }}
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -289,7 +286,7 @@ onMounted(loadPosts)
               </TableHead>
               <TableHead>岗位名称</TableHead>
               <TableHead>岗位编码</TableHead>
-              <TableHead>岗位级别</TableHead>
+              <TableHead class="text-center">岗位级别</TableHead>
               <TableHead>排序</TableHead>
               <TableHead>状态</TableHead>
               <TableHead>内置</TableHead>
@@ -309,7 +306,7 @@ onMounted(loadPosts)
               </TableCell>
               <TableCell class="truncate">{{ post.postName }}</TableCell>
               <TableCell class="truncate">{{ post.postCode }}</TableCell>
-              <TableCell>{{ levelText(post.postLevel) }}</TableCell>
+              <TableCell class="text-center">{{ dict.postLevel.getLabel(String(post.postLevel)) }}</TableCell>
               <TableCell class="tabular-nums">{{ post.sortOrder }}</TableCell>
               <TableCell>
                 <Switch
@@ -320,8 +317,7 @@ onMounted(loadPosts)
                 />
               </TableCell>
               <TableCell>
-                <Badge v-if="post.builtIn === 1" variant="secondary">是</Badge>
-                <Badge v-else variant="outline">否</Badge>
+                {{ dict.builtIn.getLabel(String(post.builtIn)) }}
               </TableCell>
               <TableCell class="tabular-nums text-center">{{ post.createdAt }}</TableCell>
               <TableCell class="truncate">{{ post.remark }}</TableCell>
@@ -434,8 +430,9 @@ onMounted(loadPosts)
                 <SelectValue placeholder="选择岗位级别" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="1">操作员</SelectItem>
-                <SelectItem value="2">审核员</SelectItem>
+                <SelectItem v-for="item in dict.postLevel.items.value" :key="item.itemKey" :value="item.itemKey">
+                  {{ item.itemLabel }}
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>

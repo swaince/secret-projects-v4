@@ -1,0 +1,11 @@
+import { createDictAccessor } from './accessor'
+
+export const dict = createDictAccessor({
+  status: { code: 'status', valueType: 'NUMBER' },
+  dataValueType: { code: 'data_type', valueType: 'STRING' },
+  builtIn: { code: 'built_in', valueType: 'NUMBER' },
+  deleted: { code: 'deleted', valueType: 'NUMBER' },
+  postLevel: { code: 'post_level', valueType: 'NUMBER' },
+})
+
+export type { DictItem, DictAccessor, DataValueType } from './types'

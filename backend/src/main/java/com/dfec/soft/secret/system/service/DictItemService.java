@@ -3,6 +3,7 @@ package com.dfec.soft.secret.system.service;
 import com.dfec.soft.secret.common.validation.group.Create;
 import com.dfec.soft.secret.common.validation.group.Update;
 import com.dfec.soft.secret.system.dto.common.DictItemDTO;
+import com.dfec.soft.secret.system.dto.common.DictWithItemsDTO;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.validation.annotation.Validated;
@@ -76,4 +77,12 @@ public interface DictItemService {
      * @return 被删除的字典项 ID 列表，若字典不存在则返回空列表
      */
     List<String> deleteByDictCode(String dictCode);
+
+    /**
+     * 根据字典编码查询字典及其字典项。
+     *
+     * @param dictCode 字典编码
+     * @return 字典及字典项 DTO，若字典不存在则返回 null
+     */
+    DictWithItemsDTO getWithItemsByCode(String dictCode);
 }

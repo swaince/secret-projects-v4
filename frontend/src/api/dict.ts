@@ -15,12 +15,21 @@ export interface DictItemDTO {
   dictItemId: string
   dictId: string
   itemKey: string
+  itemLabel: string
   itemValue: string
   sortOrder: number
   remark: string
   status: number
   builtIn: number
   createdAt: string
+}
+
+export interface DictWithItemsDTO {
+  dictId: string
+  dictName: string
+  dictCode: string
+  dataValueType: string
+  items: DictItemDTO[]
 }
 
 export interface DictPageParams {
@@ -72,4 +81,8 @@ export function deleteDictItem(dictId: string, itemId: string): Promise<string> 
 
 export function deleteDictItems(dictId: string, ids: string[]): Promise<string[]> {
   return http.delete<string[]>(`/dicts/${dictId}/items`, ids)
+}
+
+export function fetchDictByCode(dictCode: string): Promise<DictWithItemsDTO | null> {
+  return http.get<DictWithItemsDTO | null>('/dicts/items/by-code', { dictCode })
 }

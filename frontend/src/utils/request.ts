@@ -34,7 +34,7 @@ class HttpClient {
     return this.instance.put<T, D>(url, data)
   }
 
-  delete<T, D>(url: string, data?: unknown): Promise<D> {
+  delete<T, D=T>(url: string, data?: unknown): Promise<D> {
     return this.instance.delete<T, D>(url, { data })
   }
 }

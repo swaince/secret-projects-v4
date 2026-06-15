@@ -58,8 +58,12 @@ import { Search, RotateCcw, Plus, Trash2, Pencil, Eye, Check, Minus, X } from '@
 import type { DictDTO, DictPageParams } from '@/api/dict'
 import { fetchDicts, createDict, updateDict, deleteDict, deleteDicts } from '@/api/dict'
 import DictItemDrawer from '@/components/system/DictItemDrawer.vue'
+import { useDictStore } from '@/stores/dict'
+import { dict as dictMap } from '@/dict'
 
+const dictStore = useDictStore()
 const dicts = ref<DictDTO[]>([])
+
 const total = ref(0)
 const page = ref(1)
 const size = ref(10)
@@ -124,16 +128,22 @@ function handleRowClick(dict: DictDTO) {
 }
 
 function handleDelete(dictId: string) {
+  const dict = dicts.value.find((d) => d.dictId === dictId)
   openConfirm('确定要删除该字典及其所有字典项吗？', async () => {
     await deleteDict(dictId)
+    if (dict) dictStore.invalidate(dict.dictCode)
     await loadDicts()
   })
 }
 
 function handleBatchDelete() {
   if (selected.value.length === 0) return
+  const codes = dicts.value
+    .filter((d) => selected.value.includes(d.dictId))
+    .map((d) => d.dictCode)
   openConfirm(`确定要删除选中的 ${selected.value.length} 个字典吗？`, async () => {
     await deleteDicts(selected.value)
+    codes.forEach((code) => dictStore.invalidate(code))
     selected.value = []
     await loadDicts()
   })
@@ -201,6 +211,7 @@ async function handleSave() {
   } else {
     await createDict(formData.value)
   }
+  dictStore.invalidate(formData.value.dictCode)
   dialogOpen.value = false
   await loadDicts()
 }
@@ -225,11 +236,9 @@ onMounted(loadDicts)
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="__all__">全部</SelectItem>
-                <SelectItem value="STRING">STRING</SelectItem>
-                <SelectItem value="NUMBER">NUMBER</SelectItem>
-                <SelectItem value="BOOLEAN">BOOLEAN</SelectItem>
-                <SelectItem value="OBJECT">OBJECT</SelectItem>
-                <SelectItem value="ARRAY">ARRAY</SelectItem>
+                <SelectItem v-for="item in dictMap.dataValueType.items.value" :key="item.itemKey" :value="item.itemKey">
+                  {{ item.itemLabel }}
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -278,7 +287,7 @@ onMounted(loadDicts)
               </TableHead>
               <TableHead>字典名称</TableHead>
               <TableHead>字典编码</TableHead>
-              <TableHead>数据类型</TableHead>
+              <TableHead class="text-center">数据类型</TableHead>
               <TableHead>状态</TableHead>
               <TableHead>内置</TableHead>
               <TableHead class="text-center">创建时间</TableHead>
@@ -302,7 +311,7 @@ onMounted(loadDicts)
               </TableCell>
               <TableCell class="truncate">{{ dict.dictName }}</TableCell>
               <TableCell class="truncate">{{ dict.dictCode }}</TableCell>
-              <TableCell>{{ dict.dataValueType }}</TableCell>
+              <TableCell class="text-center">{{ dictMap.dataValueType.getLabel(dict.dataValueType) }}</TableCell>
               <TableCell @click.stop>
                 <Switch
                   size="sm"
@@ -431,11 +440,9 @@ onMounted(loadDicts)
                 <SelectValue placeholder="选择数据类型" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="STRING">STRING</SelectItem>
-                <SelectItem value="NUMBER">NUMBER</SelectItem>
-                <SelectItem value="BOOLEAN">BOOLEAN</SelectItem>
-                <SelectItem value="OBJECT">OBJECT</SelectItem>
-                <SelectItem value="ARRAY">ARRAY</SelectItem>
+                <SelectItem v-for="item in dictMap.dataValueType.items.value" :key="item.itemKey" :value="item.itemKey">
+                  {{ item.itemLabel }}
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
