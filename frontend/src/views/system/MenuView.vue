@@ -51,7 +51,7 @@ import {
   X,
 } from '@lucide/vue'
 import type { MenuDTO } from '@/api/menu'
-import { fetchMenuTree, createMenu, updateMenu, deleteMenu } from '@/api/menu'
+import { fetchMenuList, createMenu, updateMenu, deleteMenu } from '@/api/menu'
 import { dict } from '@/dict'
 import { useMenuStore } from '@/stores/menu'
 
@@ -163,8 +163,24 @@ async function executeConfirm() {
   confirmOpen.value = false
 }
 
+function buildTree(flatList: MenuDTO[]): MenuDTO[] {
+  const map = new Map<string, MenuDTO>()
+  for (const item of flatList) map.set(item.menuId, { ...item, children: [] })
+  const roots: MenuDTO[] = []
+  for (const item of flatList) {
+    const node = map.get(item.menuId)!
+    if (item.parentId && map.has(item.parentId)) {
+      map.get(item.parentId)!.children!.push(node)
+    } else {
+      roots.push(node)
+    }
+  }
+  return roots
+}
+
 async function loadTree() {
-  tree.value = await fetchMenuTree()
+  const list = await fetchMenuList()
+  tree.value = buildTree(list)
 }
 
 function openCreateRoot() {

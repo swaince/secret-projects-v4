@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { RouteRecordRaw } from 'vue-router'
+import router from '@/router'
 import { fetchMenuTree } from '@/api/menu'
 import type { MenuDTO } from '@/api/menu'
 
@@ -17,7 +18,7 @@ const modules = import.meta.glob('@/views/**/*.vue')
 
 function toMenuItems(dtos: MenuDTO[]): MenuItem[] {
   return dtos
-    .filter((d) => d.visible === 1 && d.menuType !== 'B')
+    .filter((d) => d.visible === 1 && d.status === 1 && d.menuType !== 'B')
     .map((d) => ({
       id: d.menuId,
       title: d.menuName,
@@ -30,7 +31,7 @@ function toMenuItems(dtos: MenuDTO[]): MenuItem[] {
 function generateRoutes(menuTree: MenuDTO[]): RouteRecordRaw[] {
   const result: RouteRecordRaw[] = []
   for (const menu of menuTree) {
-    if (menu.menuType === 'B') continue
+    if (menu.menuType === 'B' || menu.status !== 1) continue
 
     const route: RouteRecordRaw = {
       path: menu.path || '',
@@ -75,10 +76,16 @@ export const useMenuStore = defineStore('menu', () => {
     menus.value = tree
     menuItems.value = toMenuItems(tree)
     routes.value = generateRoutes(tree)
+    for (const route of routes.value) {
+      router.addRoute('layout', route)
+    }
     loaded.value = true
   }
 
   function reset() {
+    routes.value.forEach((r) => {
+      try { router.removeRoute(r.name as string) } catch { /* route may not exist */ }
+    })
     menus.value = []
     menuItems.value = []
     routes.value = []

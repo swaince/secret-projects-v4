@@ -18,9 +18,6 @@ router.beforeEach(async (to) => {
   const menuStore = useMenuStore()
   if (!menuStore.loaded) {
     await menuStore.loadMenus()
-    for (const route of menuStore.routes) {
-      router.addRoute('layout', route)
-    }
     return to.fullPath
   }
 })
