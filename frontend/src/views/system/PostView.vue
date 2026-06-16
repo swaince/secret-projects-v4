@@ -217,7 +217,7 @@ onMounted(loadPosts)
 <template>
   <div class="space-y-4">
     <Card>
-      <CardContent class="py-4">
+      <CardContent class="py-2">
           <div class="flex items-end gap-4">
           <div class="flex items-center gap-2">
             <Label class="shrink-0">岗位名称</Label>

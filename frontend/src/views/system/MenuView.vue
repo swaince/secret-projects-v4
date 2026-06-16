@@ -242,6 +242,7 @@ async function handleSave() {
   dialogOpen.value = false
   await loadTree()
   menuStore.reset()
+  await menuStore.loadMenus()
 }
 
 function handleDelete(menuId: string) {
@@ -249,6 +250,7 @@ function handleDelete(menuId: string) {
     await deleteMenu(menuId)
     await loadTree()
     menuStore.reset()
+    await menuStore.loadMenus()
   })
 }
 
@@ -256,6 +258,7 @@ async function handleToggleStatus(menu: MenuDTO, enabled: boolean) {
   await updateMenu(menu.menuId, { status: enabled ? 1 : 0 })
   await loadTree()
   menuStore.reset()
+  await menuStore.loadMenus()
 }
 
 onMounted(loadTree)

@@ -38,6 +38,13 @@
 - [x] 8.3 创建 `PostAuthView.vue`（岗位菜单授权）
 - [x] 8.4 创建 `RoleAuthView.vue`（角色菜单授权）
 
+## 8B. 前端：部门授权页面重写
+
+- [x] 8B.1 重写 `DeptAuthView.vue` — 左侧部门树 + 右侧菜单授权布局
+- [x] 8B.2 重写 `DeptTreeItem.vue` — 树形展示 + 复选框联动（父子联动）
+- [x] 8B.3 实现搜索过滤 + 全选 + 已选计数 + 保存
+- [x] 8B.4 `pnpm type-check` + `pnpm lint` 通过
+
 ## 9. 菜单数据 + 字典
 
 - [x] 9.1 Flyway 迁移注册授权管理菜单项 + 字典注册

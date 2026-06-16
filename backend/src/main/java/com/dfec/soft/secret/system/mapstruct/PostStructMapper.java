@@ -47,7 +47,6 @@ public interface PostStructMapper {
      * @param request DTO 请求
      */
     @Mapping(target = "postId", ignore = true)
-    @Mapping(target = "status", ignore = true)
     @Mapping(target = "builtIn", ignore = true)
     @Mapping(target = "deleted", ignore = true)
     @Mapping(target = "createdAt", ignore = true)

@@ -34,38 +34,40 @@ public class UserRelationServiceImpl implements UserRelationService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveBatch(String relationType, List<String> userIds, String targetId, String createdBy) {
+    public void saveBatch(String relationType, List<String> userIds, List<String> targetIds, String createdBy) {
+        String type = relationType.toUpperCase();
         LambdaQueryWrapper<SysUserRelation> deleteWrapper = new LambdaQueryWrapper<>();
-        deleteWrapper.eq(SysUserRelation::getRelationType, relationType)
+        deleteWrapper.eq(SysUserRelation::getRelationType, type)
                 .in(SysUserRelation::getUserId, userIds);
         userRelationMapper.delete(deleteWrapper);
 
         LocalDateTime now = LocalDateTime.now();
-        List<SysUserRelation> entities = userIds.stream()
-                .map(userId -> {
-                    SysUserRelation entity = new SysUserRelation();
-                    entity.setRelationId(uidService.next());
-                    entity.setRelationType(relationType);
-                    entity.setUserId(userId);
-                    entity.setTargetId(targetId);
-                    entity.setCreatedAt(now);
-                    entity.setCreatedBy(createdBy);
-                    return entity;
-                })
-                .collect(Collectors.toList());
+        List<SysUserRelation> entities = new java.util.ArrayList<>();
+        for (String userId : userIds) {
+            for (String targetId : targetIds) {
+                SysUserRelation entity = new SysUserRelation();
+                entity.setRelationId(uidService.next());
+                entity.setRelationType(type);
+                entity.setUserId(userId);
+                entity.setTargetId(targetId);
+                entity.setCreatedAt(now);
+                entity.setCreatedBy(createdBy);
+                entities.add(entity);
+            }
+        }
 
         for (SysUserRelation entity : entities) {
             userRelationMapper.insert(entity);
         }
 
-        LOGGER.info("批量保存用户关系，relationType={}, userIds={}, targetId={}", relationType, userIds.size(), targetId);
+        LOGGER.info("批量保存用户关系，relationType={}, userIds={}, targetIds={}", type, userIds.size(), targetIds);
     }
 
     @Override
     public List<String> getTargetIds(String relationType, String userId) {
         LambdaQueryWrapper<SysUserRelation> wrapper = new LambdaQueryWrapper<>();
         wrapper.select(SysUserRelation::getTargetId)
-                .eq(SysUserRelation::getRelationType, relationType)
+                .eq(SysUserRelation::getRelationType, relationType.toUpperCase())
                 .eq(SysUserRelation::getUserId, userId);
         return userRelationMapper.selectList(wrapper).stream()
                 .map(SysUserRelation::getTargetId)

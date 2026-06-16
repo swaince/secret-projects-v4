@@ -47,7 +47,6 @@ public interface DictStructMapper {
      * @param request DTO 请求
      */
     @Mapping(target = "dictId", ignore = true)
-    @Mapping(target = "status", ignore = true)
     @Mapping(target = "builtIn", ignore = true)
     @Mapping(target = "deleted", ignore = true)
     @Mapping(target = "createdAt", ignore = true)

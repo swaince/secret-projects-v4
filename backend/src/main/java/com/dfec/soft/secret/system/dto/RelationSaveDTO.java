@@ -15,17 +15,17 @@ public class RelationSaveDTO {
     private List<String> userIds;
 
     /**
-     * 目标ID。
+     * 目标ID列表。
      */
-    private String targetId;
+    private List<String> targetIds;
 
     public List<String> getUserIds() { return userIds; }
     public void setUserIds(List<String> userIds) { this.userIds = userIds; }
-    public String getTargetId() { return targetId; }
-    public void setTargetId(String targetId) { this.targetId = targetId; }
+    public List<String> getTargetIds() { return targetIds; }
+    public void setTargetIds(List<String> targetIds) { this.targetIds = targetIds; }
 
     @Override
     public String toString() {
-        return "RelationSaveDTO{userIds=" + userIds + ", targetId='" + targetId + "'}";
+        return "RelationSaveDTO{userIds=" + userIds + ", targetIds=" + targetIds + "}";
     }
 }

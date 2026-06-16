@@ -28,4 +28,12 @@ public interface AuthorizationService {
      * @return 菜单 ID 列表
      */
     List<String> getMenuIds(String subjectType, String subjectId);
+
+    /**
+     * 查询用户所有权限（直接授权 + 角色/岗位/部门间接授权）。
+     *
+     * @param userId 用户 ID
+     * @return 菜单 ID 列表
+     */
+    List<String> getAllMenuIdsForUser(String userId);
 }

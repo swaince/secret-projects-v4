@@ -167,7 +167,7 @@ onMounted(loadLogs)
 <template>
   <div class="space-y-4">
     <Card>
-      <CardContent class="py-4">
+      <CardContent class="py-2">
         <div class="flex flex-wrap items-end gap-4">
           <div class="flex items-center gap-2">
             <Label class="shrink-0">请求URL</Label>

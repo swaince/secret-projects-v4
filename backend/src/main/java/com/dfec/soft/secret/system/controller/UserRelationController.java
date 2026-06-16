@@ -39,7 +39,7 @@ public class UserRelationController {
     @PostMapping("/{relationType}")
     public R<Void> save(@PathVariable String relationType, @RequestBody RelationSaveDTO request,
             @TokenParam("userId") String userId) {
-        userRelationService.saveBatch(relationType, request.getUserIds(), request.getTargetId(), userId);
+        userRelationService.saveBatch(relationType, request.getUserIds(), request.getTargetIds(), userId);
         return R.ok();
     }
 

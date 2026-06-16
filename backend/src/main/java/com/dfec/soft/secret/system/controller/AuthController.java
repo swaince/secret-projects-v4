@@ -54,4 +54,15 @@ public class AuthController {
     public R<List<String>> getMenuIds(@PathVariable String subjectType, @PathVariable String subjectId) {
         return R.ok(authorizationService.getMenuIds(subjectType, subjectId));
     }
+
+    /**
+     * 查询用户所有权限（直接授权 + 角色/岗位/部门间接授权汇总）。
+     *
+     * @param userId 用户 ID
+     * @return 菜单 ID 列表
+     */
+    @GetMapping("/user/{userId}/all")
+    public R<List<String>> getAllMenuIdsForUser(@PathVariable String userId) {
+        return R.ok(authorizationService.getAllMenuIdsForUser(userId));
+    }
 }

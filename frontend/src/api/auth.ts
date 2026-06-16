@@ -12,6 +12,10 @@ export function fetchUserRelations(relationType: string, userId: string): Promis
   return http.get<string[]>(`/relations/${relationType}/${userId}`)
 }
 
-export function saveUserRelations(relationType: string, userIds: string[], targetId: string): Promise<number> {
-  return http.post<number>(`/relations/${relationType}`, { userIds, targetId })
+export function saveUserRelations(relationType: string, userIds: string[], targetIds: string[]): Promise<number> {
+  return http.post<number>(`/relations/${relationType}`, { userIds, targetIds })
+}
+
+export function fetchAllUserMenuIds(userId: string): Promise<string[]> {
+  return http.get<string[]>(`/authorizations/user/${userId}/all`)
 }

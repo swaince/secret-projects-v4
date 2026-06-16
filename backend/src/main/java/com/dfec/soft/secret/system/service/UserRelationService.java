@@ -15,10 +15,10 @@ public interface UserRelationService {
      *
      * @param relationType 关系类型
      * @param userIds      用户 ID 列表
-     * @param targetId     目标 ID
+     * @param targetIds    目标 ID 列表
      * @param createdBy    创建人
      */
-    void saveBatch(String relationType, List<String> userIds, String targetId, String createdBy);
+    void saveBatch(String relationType, List<String> userIds, List<String> targetIds, String createdBy);
 
     /**
      * 查询用户关联的目标 ID 列表。
