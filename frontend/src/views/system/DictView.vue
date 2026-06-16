@@ -221,17 +221,17 @@ onMounted(loadDicts)
 
 <template>
   <div class="space-y-4">
-    <Card>
-      <CardContent class="py-2">
-        <div class="flex items-end gap-4">
+    <Card class="py-4">
+      <CardContent>
+        <div class="grid grid-cols-4 gap-4">
           <div class="flex items-center gap-2">
             <Label class="shrink-0">字典名称</Label>
-            <Input v-model="searchName" name="dictName" autocomplete="off" placeholder="请输入字典名称…" class="w-48" />
+            <Input v-model="searchName" name="dictName" autocomplete="off" placeholder="请输入字典名称…" class="flex-1" />
           </div>
           <div class="flex items-center gap-2">
             <Label class="shrink-0">数据类型</Label>
             <Select :model-value="searchType || '__all__'" @update:model-value="(v: any) => { searchType = v === '__all__' ? '' : String(v) }">
-              <SelectTrigger class="w-48">
+              <SelectTrigger class="flex-1">
                 <SelectValue placeholder="全部" />
               </SelectTrigger>
               <SelectContent>

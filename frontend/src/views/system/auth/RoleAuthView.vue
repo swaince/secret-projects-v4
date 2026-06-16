@@ -130,7 +130,7 @@ onMounted(async () => {
       </div>
       <div class="flex-1 overflow-auto">
         <div v-if="filteredRoles.length === 0" class="px-3 py-6 text-center text-sm text-muted-foreground">{{ searchQuery ? '无匹配角色' : '暂无角色数据' }}</div>
-        <div v-for="role in filteredRoles" :key="role.roleId" class="flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent cursor-pointer border-b last:border-b-0" @click="toggleRole(role.roleId)">
+        <div v-for="role in filteredRoles" :key="role.roleId" class="flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent cursor-pointer border-b last:border-b-0" :class="viewingId === role.roleId && 'bg-accent'" @click="toggleRole(role.roleId)">
           <Checkbox :model-value="selectedRoles.includes(role.roleId)" :aria-label="role.roleName" class="shrink-0" />
           <span class="flex-1 truncate">{{ role.roleName }}</span>
           <button class="flex size-5 shrink-0 items-center justify-center rounded transition-colors hover:bg-muted" :class="viewingId === role.roleId ? 'text-primary' : 'text-muted-foreground'" :aria-label="`查看 ${role.roleName} 授权`" @click.stop="handleViewRole(role.roleId)"><Eye class="size-3.5" /></button>

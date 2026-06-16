@@ -202,11 +202,11 @@ onMounted(async () => {
 <template>
   <Tabs v-model="tabValue" class="flex h-full flex-col">
     <TabsList class="shrink-0 w-full">
-      <TabsTrigger value="menu">菜单授权</TabsTrigger>
-      <TabsTrigger value="role">角色</TabsTrigger>
-      <TabsTrigger value="post">岗位</TabsTrigger>
-      <TabsTrigger value="dept">部门</TabsTrigger>
-      <TabsTrigger value="all">权限总览</TabsTrigger>
+      <TabsTrigger value="menu" class="data-active:bg-primary data-active:text-primary-foreground">菜单授权</TabsTrigger>
+      <TabsTrigger value="role" class="data-active:bg-primary data-active:text-primary-foreground">角色</TabsTrigger>
+      <TabsTrigger value="post" class="data-active:bg-primary data-active:text-primary-foreground">岗位</TabsTrigger>
+      <TabsTrigger value="dept" class="data-active:bg-primary data-active:text-primary-foreground">部门</TabsTrigger>
+      <TabsTrigger value="all" class="data-active:bg-primary data-active:text-primary-foreground">权限总览</TabsTrigger>
     </TabsList>
 
     <div class="flex-1 min-h-0 mt-4">
@@ -229,7 +229,7 @@ onMounted(async () => {
             </div>
             <div class="flex-1 overflow-auto">
               <div v-if="filteredUsers.length === 0" class="px-3 py-6 text-center text-sm text-muted-foreground">{{ userSearch ? '无匹配用户' : '暂无用户' }}</div>
-              <div v-for="user in filteredUsers" :key="user.userId" class="flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent cursor-pointer border-b last:border-b-0" @click="toggleUser(user.userId)">
+              <div v-for="user in filteredUsers" :key="user.userId" class="flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent cursor-pointer border-b last:border-b-0" :class="viewingId === user.userId && 'bg-accent'" @click="toggleUser(user.userId)">
                 <Checkbox :model-value="selectedUsers.includes(user.userId)" :aria-label="user.displayName || user.username" class="shrink-0" />
                 <span class="flex-1 truncate">{{ user.displayName || user.username }}</span>
                 <button class="flex size-5 shrink-0 items-center justify-center rounded transition-colors hover:bg-muted" :class="viewingId === user.userId ? 'text-primary' : 'text-muted-foreground'" :aria-label="`查看 ${user.displayName || user.username} 授权`" @click.stop="handleViewUserMenu(user.userId)"><Eye class="size-3.5" /></button>
@@ -258,7 +258,7 @@ onMounted(async () => {
             <div class="px-3 py-1.5 border-b shrink-0"><div class="flex items-center gap-2"><Checkbox :model-value="allUsersSelected" aria-label="全选用户" @update:model-value="toggleAllUsers" class="shrink-0 data-[state=indeterminate]:bg-primary data-[state=indeterminate]:text-primary-foreground data-[state=indeterminate]:border-primary"><template #default><Check v-if="allUsersSelected === true" class="size-3.5" /><Minus v-else-if="allUsersSelected === 'indeterminate'" class="size-3.5" /><template v-else /></template></Checkbox><span class="text-xs text-muted-foreground">已选 {{ selectedUsers.length }} 个用户</span></div></div>
             <div class="flex-1 overflow-auto">
               <div v-if="filteredUsers.length === 0" class="px-3 py-6 text-center text-sm text-muted-foreground">{{ userSearch ? '无匹配用户' : '暂无用户' }}</div>
-              <div v-for="user in filteredUsers" :key="user.userId" class="flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent cursor-pointer border-b last:border-b-0" @click="toggleUser(user.userId)"><Checkbox :model-value="selectedUsers.includes(user.userId)" :aria-label="user.displayName || user.username" class="shrink-0" /><span class="flex-1 truncate">{{ user.displayName || user.username }}</span><button class="flex size-5 shrink-0 items-center justify-center rounded transition-colors hover:bg-muted" :class="viewingId === user.userId ? 'text-primary' : 'text-muted-foreground'" :aria-label="`查看 ${user.displayName || user.username} 角色`" @click.stop="handleViewUserRole(user.userId)"><Eye class="size-3.5" /></button></div>
+              <div v-for="user in filteredUsers" :key="user.userId" class="flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent cursor-pointer border-b last:border-b-0" :class="viewingId === user.userId && 'bg-accent'" @click="toggleUser(user.userId)"><Checkbox :model-value="selectedUsers.includes(user.userId)" :aria-label="user.displayName || user.username" class="shrink-0" /><span class="flex-1 truncate">{{ user.displayName || user.username }}</span><button class="flex size-5 shrink-0 items-center justify-center rounded transition-colors hover:bg-muted" :class="viewingId === user.userId ? 'text-primary' : 'text-muted-foreground'" :aria-label="`查看 ${user.displayName || user.username} 角色`" @click.stop="handleViewUserRole(user.userId)"><Eye class="size-3.5" /></button></div>
             </div>
           </div>
           <div class="flex-1 min-w-0 rounded-lg border flex flex-col overflow-hidden">
@@ -278,7 +278,7 @@ onMounted(async () => {
             <div class="px-3 py-1.5 border-b shrink-0"><div class="flex items-center gap-2"><Checkbox :model-value="allUsersSelected" aria-label="全选用户" @update:model-value="toggleAllUsers" class="shrink-0 data-[state=indeterminate]:bg-primary data-[state=indeterminate]:text-primary-foreground data-[state=indeterminate]:border-primary"><template #default><Check v-if="allUsersSelected === true" class="size-3.5" /><Minus v-else-if="allUsersSelected === 'indeterminate'" class="size-3.5" /><template v-else /></template></Checkbox><span class="text-xs text-muted-foreground">已选 {{ selectedUsers.length }} 个用户</span></div></div>
             <div class="flex-1 overflow-auto">
               <div v-if="filteredUsers.length === 0" class="px-3 py-6 text-center text-sm text-muted-foreground">{{ userSearch ? '无匹配用户' : '暂无用户' }}</div>
-              <div v-for="user in filteredUsers" :key="user.userId" class="flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent cursor-pointer border-b last:border-b-0" @click="toggleUser(user.userId)"><Checkbox :model-value="selectedUsers.includes(user.userId)" :aria-label="user.displayName || user.username" class="shrink-0" /><span class="flex-1 truncate">{{ user.displayName || user.username }}</span><button class="flex size-5 shrink-0 items-center justify-center rounded transition-colors hover:bg-muted" :class="viewingId === user.userId ? 'text-primary' : 'text-muted-foreground'" :aria-label="`查看 ${user.displayName || user.username} 岗位`" @click.stop="handleViewUserPost(user.userId)"><Eye class="size-3.5" /></button></div>
+              <div v-for="user in filteredUsers" :key="user.userId" class="flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent cursor-pointer border-b last:border-b-0" :class="viewingId === user.userId && 'bg-accent'" @click="toggleUser(user.userId)"><Checkbox :model-value="selectedUsers.includes(user.userId)" :aria-label="user.displayName || user.username" class="shrink-0" /><span class="flex-1 truncate">{{ user.displayName || user.username }}</span><button class="flex size-5 shrink-0 items-center justify-center rounded transition-colors hover:bg-muted" :class="viewingId === user.userId ? 'text-primary' : 'text-muted-foreground'" :aria-label="`查看 ${user.displayName || user.username} 岗位`" @click.stop="handleViewUserPost(user.userId)"><Eye class="size-3.5" /></button></div>
             </div>
           </div>
           <div class="flex-1 min-w-0 rounded-lg border flex flex-col overflow-hidden">
@@ -298,7 +298,7 @@ onMounted(async () => {
             <div class="px-3 py-1.5 border-b shrink-0"><div class="flex items-center gap-2"><Checkbox :model-value="allUsersSelected" aria-label="全选用户" @update:model-value="toggleAllUsers" class="shrink-0 data-[state=indeterminate]:bg-primary data-[state=indeterminate]:text-primary-foreground data-[state=indeterminate]:border-primary"><template #default><Check v-if="allUsersSelected === true" class="size-3.5" /><Minus v-else-if="allUsersSelected === 'indeterminate'" class="size-3.5" /><template v-else /></template></Checkbox><span class="text-xs text-muted-foreground">已选 {{ selectedUsers.length }} 个用户</span></div></div>
             <div class="flex-1 overflow-auto">
               <div v-if="filteredUsers.length === 0" class="px-3 py-6 text-center text-sm text-muted-foreground">{{ userSearch ? '无匹配用户' : '暂无用户' }}</div>
-              <div v-for="user in filteredUsers" :key="user.userId" class="flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent cursor-pointer border-b last:border-b-0" @click="toggleUser(user.userId)"><Checkbox :model-value="selectedUsers.includes(user.userId)" :aria-label="user.displayName || user.username" class="shrink-0" /><span class="flex-1 truncate">{{ user.displayName || user.username }}</span><button class="flex size-5 shrink-0 items-center justify-center rounded transition-colors hover:bg-muted" :class="viewingId === user.userId ? 'text-primary' : 'text-muted-foreground'" :aria-label="`查看 ${user.displayName || user.username} 部门`" @click.stop="handleViewUserDept(user.userId)"><Eye class="size-3.5" /></button></div>
+              <div v-for="user in filteredUsers" :key="user.userId" class="flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent cursor-pointer border-b last:border-b-0" :class="viewingId === user.userId && 'bg-accent'" @click="toggleUser(user.userId)"><Checkbox :model-value="selectedUsers.includes(user.userId)" :aria-label="user.displayName || user.username" class="shrink-0" /><span class="flex-1 truncate">{{ user.displayName || user.username }}</span><button class="flex size-5 shrink-0 items-center justify-center rounded transition-colors hover:bg-muted" :class="viewingId === user.userId ? 'text-primary' : 'text-muted-foreground'" :aria-label="`查看 ${user.displayName || user.username} 部门`" @click.stop="handleViewUserDept(user.userId)"><Eye class="size-3.5" /></button></div>
             </div>
           </div>
           <div class="flex-1 min-w-0 rounded-lg border flex flex-col overflow-hidden">

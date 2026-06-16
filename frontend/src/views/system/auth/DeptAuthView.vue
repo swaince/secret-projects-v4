@@ -146,7 +146,7 @@ onMounted(async () => {
       </div>
       <div class="flex-1 overflow-auto">
         <div v-if="filteredRows.length === 0" class="px-3 py-8 text-center text-xs text-muted-foreground">暂无匹配部门</div>
-        <div v-for="row in filteredRows" :key="row.id" class="flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-accent/50 cursor-pointer border-b last:border-b-0" :style="{ paddingLeft: `${row.depth * 20 + 12}px` }" @click="toggleDept(row.id)">
+        <div v-for="row in filteredRows" :key="row.id" class="flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-accent/50 cursor-pointer border-b last:border-b-0" :class="viewingId === row.id && 'bg-accent'" :style="{ paddingLeft: `${row.depth * 20 + 12}px` }" @click="toggleDept(row.id)">
           <button class="flex size-5 shrink-0 items-center justify-center rounded" :class="row.hasChildren ? 'hover:bg-muted cursor-pointer' : 'invisible'" :aria-label="expandedIds.has(row.id) ? '收起' : '展开'" @click.stop="toggleExpand(row.id)">
             <ChevronDown v-if="expandedIds.has(row.id)" class="size-4" /><ChevronRight v-else class="size-4" />
           </button>

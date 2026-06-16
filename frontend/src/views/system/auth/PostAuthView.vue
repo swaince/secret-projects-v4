@@ -130,7 +130,7 @@ onMounted(async () => {
       </div>
       <div class="flex-1 overflow-auto">
         <div v-if="filteredPosts.length === 0" class="px-3 py-6 text-center text-sm text-muted-foreground">{{ searchQuery ? '无匹配岗位' : '暂无岗位数据' }}</div>
-        <div v-for="post in filteredPosts" :key="post.postId" class="flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent cursor-pointer border-b last:border-b-0" @click="togglePost(post.postId)">
+        <div v-for="post in filteredPosts" :key="post.postId" class="flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent cursor-pointer border-b last:border-b-0" :class="viewingId === post.postId && 'bg-accent'" @click="togglePost(post.postId)">
           <Checkbox :model-value="selectedPosts.includes(post.postId)" :aria-label="post.postName" class="shrink-0" />
           <span class="flex-1 truncate">{{ post.postName }}</span>
           <button class="flex size-5 shrink-0 items-center justify-center rounded transition-colors hover:bg-muted" :class="viewingId === post.postId ? 'text-primary' : 'text-muted-foreground'" :aria-label="`查看 ${post.postName} 授权`" @click.stop="handleViewPost(post.postId)"><Eye class="size-3.5" /></button>

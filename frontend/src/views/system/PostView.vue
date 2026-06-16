@@ -216,21 +216,21 @@ onMounted(loadPosts)
 
 <template>
   <div class="space-y-4">
-    <Card>
-      <CardContent class="py-2">
-          <div class="flex items-end gap-4">
+    <Card class="py-4">
+      <CardContent>
+          <div class="grid grid-cols-4 gap-4">
           <div class="flex items-center gap-2">
             <Label class="shrink-0">岗位名称</Label>
-            <Input v-model="searchName" name="postName" autocomplete="off" placeholder="请输入岗位名称…" class="w-48" />
+            <Input v-model="searchName" name="postName" autocomplete="off" placeholder="请输入岗位名称…" class="flex-1" />
           </div>
           <div class="flex items-center gap-2">
             <Label class="shrink-0">岗位编码</Label>
-            <Input v-model="searchCode" name="postCode" autocomplete="off" placeholder="请输入岗位编码…" class="w-48" />
+            <Input v-model="searchCode" name="postCode" autocomplete="off" placeholder="请输入岗位编码…" class="flex-1" />
           </div>
           <div class="flex items-center gap-2">
             <Label class="shrink-0">岗位级别</Label>
             <Select :model-value="searchLevel || '__all__'" @update:model-value="(v: any) => { searchLevel = v === '__all__' ? '' : String(v) }">
-              <SelectTrigger class="w-48">
+              <SelectTrigger class="flex-1">
                 <SelectValue placeholder="全部" />
               </SelectTrigger>
               <SelectContent>

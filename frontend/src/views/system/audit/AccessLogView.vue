@@ -163,9 +163,9 @@ onMounted(loadLogs)
 
 <template>
   <div class="space-y-4">
-    <Card>
-      <CardContent class="py-2">
-        <div class="flex flex-wrap items-end gap-4">
+    <Card class="py-4">
+      <CardContent>
+        <div class="grid grid-cols-4 gap-4">
           <div class="flex items-center gap-2">
             <Label class="shrink-0">请求URL</Label>
             <Input
@@ -173,7 +173,7 @@ onMounted(loadLogs)
               name="requestUrl"
               autocomplete="off"
               placeholder="请输入URL…"
-              class="w-40"
+              class="flex-1"
             />
           </div>
           <div class="flex items-center gap-2">
@@ -183,7 +183,7 @@ onMounted(loadLogs)
               name="username"
               autocomplete="off"
               placeholder="请输入用户名…"
-              class="w-40"
+              class="flex-1"
             />
           </div>
           <div class="flex items-center gap-2">
@@ -192,7 +192,7 @@ onMounted(loadLogs)
               :model-value="searchStatus || '__all__'"
               @update:model-value="(v: any) => { searchStatus = v === '__all__' ? '' : String(v) }"
             >
-              <SelectTrigger class="w-40">
+              <SelectTrigger class="flex-1">
                 <SelectValue placeholder="全部" />
               </SelectTrigger>
               <SelectContent>
@@ -244,7 +244,7 @@ onMounted(loadLogs)
           <div class="flex items-center gap-2">
             <Label class="shrink-0">请求方式</Label>
             <Select :model-value="searchMethod || '__all__'" @update:model-value="(v: any) => { searchMethod = v === '__all__' ? '' : String(v) }">
-              <SelectTrigger class="w-40">
+              <SelectTrigger class="flex-1">
                 <SelectValue placeholder="全部" />
               </SelectTrigger>
               <SelectContent>

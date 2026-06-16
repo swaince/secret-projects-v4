@@ -211,16 +211,16 @@ onMounted(loadRoles)
 
 <template>
   <div class="space-y-4">
-    <Card>
-      <CardContent class="py-2">
-          <div class="flex items-end gap-4">
+    <Card class="py-4">
+      <CardContent>
+          <div class="grid grid-cols-4 gap-4">
           <div class="flex items-center gap-2">
             <Label class="shrink-0">角色名称</Label>
-            <Input v-model="searchName" name="roleName" autocomplete="off" placeholder="请输入角色名称…" class="w-48" />
+            <Input v-model="searchName" name="roleName" autocomplete="off" placeholder="请输入角色名称…" class="flex-1" />
           </div>
           <div class="flex items-center gap-2">
             <Label class="shrink-0">角色编码</Label>
-            <Input v-model="searchCode" name="roleCode" autocomplete="off" placeholder="请输入角色编码…" class="w-48" />
+            <Input v-model="searchCode" name="roleCode" autocomplete="off" placeholder="请输入角色编码…" class="flex-1" />
           </div>
           <div class="flex gap-2">
             <Button size="sm" data-testid="search-btn" @click="handleSearch">

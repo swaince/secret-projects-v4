@@ -227,21 +227,21 @@ onMounted(loadUsers)
 
 <template>
   <div class="space-y-4">
-    <Card>
-      <CardContent class="py-2">
-        <div class="flex flex-wrap items-end gap-4">
+    <Card class="py-4">
+      <CardContent>
+        <div class="grid grid-cols-4 gap-4">
           <div class="flex items-center gap-2">
             <Label class="shrink-0">用户名</Label>
-            <Input v-model="searchForm.username" name="username" autocomplete="off" placeholder="请输入用户名…" class="w-40" />
+            <Input v-model="searchForm.username" name="username" autocomplete="off" placeholder="请输入用户名…" class="flex-1" />
           </div>
           <div class="flex items-center gap-2">
             <Label class="shrink-0">显示名</Label>
-            <Input v-model="searchForm.displayName" name="displayName" autocomplete="off" placeholder="请输入显示名…" class="w-40" />
+            <Input v-model="searchForm.displayName" name="displayName" autocomplete="off" placeholder="请输入显示名…" class="flex-1" />
           </div>
           <div class="flex items-center gap-2">
             <Label class="shrink-0">性别</Label>
             <Select :model-value="searchForm.gender || '__all__'" @update:model-value="(v: any) => { searchForm.gender = v === '__all__' ? '' : String(v) }">
-              <SelectTrigger class="w-40">
+              <SelectTrigger class="flex-1">
                 <SelectValue placeholder="全部" />
               </SelectTrigger>
               <SelectContent>
@@ -255,7 +255,7 @@ onMounted(loadUsers)
           <div class="flex items-center gap-2">
             <Label class="shrink-0">状态</Label>
             <Select :model-value="searchForm.status || '__all__'" @update:model-value="(v: any) => { searchForm.status = v === '__all__' ? '' : String(v) }">
-              <SelectTrigger class="w-40">
+              <SelectTrigger class="flex-1">
                 <SelectValue placeholder="全部" />
               </SelectTrigger>
               <SelectContent>
