@@ -4,8 +4,8 @@ import { useRouter, useRoute } from 'vue-router'
 import { ChevronDown } from '@lucide/vue'
 import {
   LayoutDashboard, FileText, FolderTree, MessageSquareText, Settings,
-  Users, UserRound, ShieldCheck, LockKeyhole, Building2, Building,
-  BriefcaseBusiness, Menu, SlidersHorizontal, Activity, UserCheck,
+  Users, UserRound, UserCog, Shield, ShieldCheck, LockKeyhole, Building2, Building,
+  BriefcaseBusiness, UserPlus, Menu, SlidersHorizontal, Activity, UserCheck,
   Server, Database, ScrollText, LogIn, ClipboardList, BookType,
 } from '@lucide/vue'
 import {
@@ -29,8 +29,8 @@ function isActive(p: string) { return route.path === p }
 
 const iconMap: Record<string, unknown> = {
   LayoutDashboard, FileText, FolderTree, MessageSquareText, Settings,
-  Users, UserRound, ShieldCheck, LockKeyhole, Building2, Building,
-  BriefcaseBusiness, Menu, SlidersHorizontal, Activity, UserCheck,
+  Users, UserRound, UserCog, Shield, ShieldCheck, LockKeyhole, Building2, Building,
+  BriefcaseBusiness, UserPlus, Menu, SlidersHorizontal, Activity, UserCheck,
   Server, Database, ScrollText, LogIn, ClipboardList, BookType,
 }
 
@@ -77,7 +77,7 @@ function handleClick(item: MenuItem) {
                 <!-- Level 3: children, as SidebarMenuSub sibling -->
                 <SidebarMenuSub v-if="item.children && isExpanded(item.id)">
                   <SidebarMenuSubItem v-for="child in item.children" :key="child.id">
-                    <SidebarMenuSubButton :is-active="isActive(child.path || '')" @click="handleClick(child)">
+                    <SidebarMenuSubButton class="cursor-pointer" :is-active="isActive(child.path || '')" @click="handleClick(child)">
                       <span>{{ child.title }}</span>
                     </SidebarMenuSubButton>
                   </SidebarMenuSubItem>

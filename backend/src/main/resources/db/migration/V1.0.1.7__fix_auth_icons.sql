@@ -1,0 +1,2 @@
+UPDATE sys_menu SET icon = 'Building2' WHERE menu_id = 'a0000000000000000000000000000019';
+UPDATE sys_menu SET icon = 'UserPlus' WHERE menu_id = 'a000000000000000000000000000001a';
