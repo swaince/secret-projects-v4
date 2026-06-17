@@ -38,3 +38,6 @@ build/
 node_modules
 skills-lock.json
 pnpm-lock.yaml
+
+### Git Worktrees ###
+.worktrees/
